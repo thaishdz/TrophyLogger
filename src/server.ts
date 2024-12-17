@@ -2,22 +2,25 @@ import express from 'express';
 import routes from './routes'; // Importa el archivo index.ts
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import morgan from 'morgan';
 
 dotenv.config; // Carga las varibles de entorno
 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT!);
 const MONGO_URI = process.env.MONGO_URI
-const BASE_URL = process.env.BASE_URL
 
-// Middleware
+// Middlewares
+app.use(cors()); // Permite TODAS las conexiones exteriores
 app.use(express.json());
+app.use(morgan('combined')); // Configura morgan para registrar las solicitudes
 
 // Routes
-app.use(BASE_URL!, routes); // Todas las rutas comenzarán con http://api.steampowered.com
+app.use('/api/v1', routes); // Todas las rutas comenzarán con "/api/v1"
 
-mongoose.connect(MONGO_URI!)  // El operador ! afirma que MONGO_URI no será undefined
+mongoose.connect(MONGO_URI!)  // "!" dice que MONGO_URI no será undefined
     .then(() => console.log('Conectado al MongiDB'))
     .catch(err => console.log('Fracaso al conectar a MongiDB', err))
 

@@ -1,10 +1,13 @@
 import { Router } from 'express';
-import steamUserStatsRoutes from './steamUserStats.routes';
-import playerServiceRoutes from './playerService.routes';
+
+import { validateSteamParams } from '../middlewares/steamAuth.middleware';
+import { getGameInfo } from '../controllers/games.controller'
+
 
 const router = Router();
 
-router.use('/ISteamUserStats', steamUserStatsRoutes);
-router.use('/IPlayerService', playerServiceRoutes);
+
+router.get(`/search-game/:game`, validateSteamParams, getGameInfo); // Se ejecutan en este orden: middleware1 -> middleware2 -> controladorFinal
+
 
 export default router;
