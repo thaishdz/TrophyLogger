@@ -1,7 +1,8 @@
 import { Router } from 'express';
 
-import { getOwnedGames } from '../controllers/playerService.controller'
 import { validateSteamParams } from '../middlewares/steamAuth.middleware';
+import { getOwnedGames } from '../controllers/playerService.controller'
+
 
 
 const router = Router();
