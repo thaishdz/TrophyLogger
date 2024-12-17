@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 
-
 dotenv.config();
 
 
@@ -17,12 +16,14 @@ export const validateSteamParams = (req: Request, res: Response, next: NextFunct
 
 
     if (!API_KEY || !STEAM_ID) {
-        return res.status(400).json({
-            error: 'Faltan credenciales de Steam necesarias'
-        });
+        return res
+            .status(400)
+            .json({
+                error: 'Faltan credenciales de Steam necesarias'
+            });
     }
 
-    // Si todo está bien:
+    // Si todo va gucci 👍🏽 :
     // 1. Añadimos datos a req para usarlos después
     req.steamAuth = {
         apiKey: API_KEY,
