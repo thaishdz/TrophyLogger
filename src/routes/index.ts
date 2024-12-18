@@ -1,13 +1,15 @@
 import { Router } from 'express';
 
-import { validateSteamParams } from '../middlewares/steamAuth.middleware';
-import { getGameInfo } from '../controllers/games.controller'
+import { validateSteamAuthParams } from '../middlewares/steamAuth.middleware';
+import { getGameDetails } from '../controllers/games.controller'
 
 
 const router = Router();
 
-
-router.get(`/search-game/:game`, validateSteamParams, getGameInfo); // Se ejecutan en este orden: middleware1 -> middleware2 -> controladorFinal
+// Se ejecutan en este orden: middleware1 -> middleware2 -> controladorFinal
+router.get(`/search-game/:gameName`, validateSteamAuthParams, getGameDetails);
+/*router.get(`/game/:gameName/add`, addGame); 
+router.get(`/dashboard`, getAchivementStats); */
 
 
 export default router;
