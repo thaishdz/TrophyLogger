@@ -1,2 +1,3 @@
 
-# TrophyLog v1
+# 🏆 TrophyLog (v0) 
+
