@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 5000
 
 # Ejecuta el script del package.json que usa ts-node-dev
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
