@@ -12,13 +12,13 @@ export const init = () => {
 
     const app = express();
 
-    if (!config.port || !config.mongoUri) {
+    if (!config.port || !config.databaseUri) {
         logger.error('❌ Configuración faltante: Verifica las variables de entorno.');
         process.exit(1); // Salir del proceso con un código de error
     }
     
     const PORT = parseInt(config.port);
-    const MONGO_URI = config.mongoUri
+    const MONGO_URI = config.databaseUri
     
     // Crea un stream que morgan usará para enviar los logs a Winston
     const stream = {

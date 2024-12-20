@@ -1,0 +1,13 @@
+
+declare global {
+    namespace NodeJS {
+      interface ProcessEnv {
+        API_URL: string;
+        API_URL_STORE: string;
+        DATABASE_URL: string;
+        API_KEY: string;
+        STEAM_ID_64: string;
+        PORT?: string;
+      }
+    }
+}

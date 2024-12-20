@@ -13,6 +13,9 @@
       "src/types" // mi directorio de tipos
     ]
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts", 
+    "src/types/env.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
