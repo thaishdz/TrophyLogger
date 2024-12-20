@@ -1,16 +1,38 @@
-import dotenv from 'dotenv';
 import axios from 'axios';
 
-dotenv.config();
+import { config } from '../config';
+import { Game } from '../models/game.model';
+import logger from '../config/logger'
 
-export class ApiRepository {
-    private BASE_URL_API = process.env.BASE_URL_API;
 
-    constructor(apiBaseUrl: string) {
-        this.BASE_URL_API = apiBaseUrl;
+class ApiRepository {
+    private API_URL: string;
+    private API_URL_STORE: string;
+
+    constructor() {
+        this.API_URL = config.apiUrl;
+        this.API_URL_STORE = config.apiUrlStore;
     }
 
-    const CC = 'es';
+    async getGames(game: string): Promise<Game[]> {
 
+        const CC = 'es';
+
+        try {
+            const response = await axios.get(`${this.API_URL}/storesearch?term=${game}&cc=${CC}`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
+            const games = response.data.items;
+            return games.map((game: any)=> ({
+                id: game.id,
+                name: game.id,
+                cover: game.tiny_image,
+                achivements: game.achivements
+            }));
+         } catch (err) {
+            logger.error("Failed to fetch games from Steam API:", err);
+            throw new Error("Failed to fetch games from Steam API");
+         }
+    }
 
 }
+
+export default ApiRepository;

@@ -8,8 +8,8 @@ En lugar de definir un tipo fijo, como `string` o `number`, puedes usar un tipo 
 # Ejemplo
 > Estamos usando los tipos definidos en `src/types/env.d.ts` 📍
 ```ts
-function getEnv<T extends keyof NodeJS.ProcessEnv>(key: T, defaultValue?: NodeJS.ProcessEnv[T]): NodeJS.ProcessEnv[T] {
-  const value = process.env[key];
+function getEnv<T extends keyof NodeJS.ProcessEnv>(key: T, defaultValue?: NodeJS.ProcessEnv[T]): NonNullable<NodeJS.ProcessEnv[T]> {
+  const value = process.env[key]; // Typescript evalua esto como string | undefined
 
   if (value === undefined) {
     if (defaultValue !== undefined) {
@@ -18,9 +18,11 @@ function getEnv<T extends keyof NodeJS.ProcessEnv>(key: T, defaultValue?: NodeJS
     throw new Error(`Missing environment variable: ${key}`);
   }
 
-  return value as NodeJS.ProcessEnv[T]; // Devolvemos el valor (ya validado como tipo T)
+  return value as NonNullable<NodeJS.ProcessEnv[T]>; // Devolvemos el valor (ya validado como tipo T)
 }
 ```
+
+> `NonNullable<NodeJS.ProcessEnv[T]>` es para que Typescript infiera el valor devuelto siempre como string
 
 - Cuando llamas a `getEnv<string>('DATABASE_URL')`, le estás diciendo a TypeScript que el tipo de valor que esperas para la variable de entorno `DATABASE_URL` es una string. En este caso, `<T>` será reemplazado por `string`.
 

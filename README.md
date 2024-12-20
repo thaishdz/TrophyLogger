@@ -1,3 +1,2 @@
 
-# 🏆 TrophyLog (v0) 
-
+# 🏆 TrophyLog (v0)

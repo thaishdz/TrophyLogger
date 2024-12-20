@@ -1,4 +1,4 @@
-import { ApiStoreRepository } from '../repositories/api.store.repository';
+import { ApiStoreRepository } from '../repositories/api.repository';
 
 // Actúa como intermediario entre el repositorio y la lógica de negocio.
 export class GameService {

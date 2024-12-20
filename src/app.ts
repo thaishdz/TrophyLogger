@@ -11,14 +11,9 @@ import routes from './routes'; // Importa el archivo index.ts
 export const init = () => {
 
     const app = express();
-
-    if (!config.port || !config.databaseUri) {
-        logger.error('❌ Configuración faltante: Verifica las variables de entorno.');
-        process.exit(1); // Salir del proceso con un código de error
-    }
     
     const PORT = parseInt(config.port);
-    const MONGO_URI = config.databaseUri
+    const DATABASE_URL = config.databaseUri
     
     // Crea un stream que morgan usará para enviar los logs a Winston
     const stream = {
@@ -33,7 +28,7 @@ export const init = () => {
     // Routes
     app.use('/api/v1', routes); // Todas las rutas comenzarán con "/api/v1"
     
-    mongoose.connect(MONGO_URI)
+    mongoose.connect(DATABASE_URL)
         .then(() => logger.info('Conectado al Mongui ✅'))
         .catch(err => {
             logger.error('Fracaso al conectar a Mongui', err);
