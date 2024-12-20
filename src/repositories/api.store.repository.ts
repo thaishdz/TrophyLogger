@@ -1,14 +1,14 @@
-import { config } from '../config';
 import axios from 'axios';
 
+import { config } from '../config';
 import { Game } from '../models/game.model';
 
 
 export class ApiStoreRepository {
-    private BASE_URL_STORE = config.apiUrlStore;
+    private BASE_URL = config.apiUrlStore;
 
     constructor(apiBaseUrl: string) {
-        this.BASE_URL_STORE = apiBaseUrl;
+        this.BASE_URL = apiBaseUrl;
     }
 
     async getGames(game: string): Promise<Game[]> {
@@ -16,7 +16,7 @@ export class ApiStoreRepository {
         const CC = 'es';
 
         try {
-            const response = await axios.get(`${this.BASE_URL_STORE}/storesearch?term=${game}&cc=${CC}`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
+            const response = await axios.get(`${this.BASE_URL}/storesearch?term=${game}&cc=${CC}`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
             const games = response.data.items;
             return games.map((game: any)=> ({
                 id: game.id,
