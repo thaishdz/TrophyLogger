@@ -15,15 +15,17 @@ class ApiRepository {
     }
 
     async getGames(name: string): Promise<Game[]> {
-
+        console.log("Estoy en el Repository me ha llegado esto:", name);
+        
         const CC = 'es';
 
         try {
-            const response = await axios.get(`${this.API_URL}/storesearch?term=${name}&cc=${CC}`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
+            const response = await axios.get(`${this.API_URL_STORE}/storesearch?term=${name}&cc=${CC}`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
             const games = response.data.items;
+            
             return games.map((game: any)=> ({
                 id: game.id,
-                name: game.id,
+                name: game.name,
                 cover: game.tiny_image,
                 achivements: game.achivements
             }));
