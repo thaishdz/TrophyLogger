@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
 
-import { config } from './config';
+import config from './config';
 import logger from './config/logger';
 import routes from './routes'; // Importa el archivo index.ts
 
@@ -12,8 +12,8 @@ export const init = () => {
 
     const app = express();
     
-    const PORT = parseInt(config.port);
-    const DATABASE_URL = config.databaseUri
+    const PORT = config.PORT;
+    const DATABASE_URL = config.DATABASE_URL
     
     // Crea un stream que morgan usará para enviar los logs a Winston
     const stream = {

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { config } from '../config';
+import config from '../config';
 
 
 export const validateAuthParams = (req: Request, res: Response, next: NextFunction): void => {
@@ -9,15 +9,9 @@ export const validateAuthParams = (req: Request, res: Response, next: NextFuncti
     //    - Pasar al siguiente middleware/controlador usando next()
     //    - O terminar la petición enviando una respuesta
 
-    const API_KEY = config.apiKey;
-    const STEAM_ID = config.steamId;
+    const API_KEY = config.API_KEY;
+    const STEAM_ID = config.STEAM_ID;
 
-    if (!API_KEY || !STEAM_ID) {
-        res.status(400).json({error: 'Faltan credenciales de Steam necesarias'});
-        return; // la fn devuelve void y no puedo retornar un objeto Response
-    }
-
-    // Si todo va gucci 👍🏽 :
     // 1. Añadimos datos a req para usarlos después
     req.steamAuth = {
         apiKey: API_KEY,

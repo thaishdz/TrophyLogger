@@ -1,39 +1,56 @@
 import dotenv from 'dotenv';
-import logger from './logger'
+import path from 'path';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, "./.env")}); // se usa path.resolve para asegurar de que se encuentra el archivo, incluso si la app se ejecuta desde diferentes ubicaciones
 
-//  Esto evita que cada parte del código tenga que saber cómo acceder o validar las variables de entorno.
+//console.debug(dotenv.config({ path: path.resolve(__dirname, "./.env")}));
 
-function getEnv<T extends keyof NodeJS.ProcessEnv>(key: T, defaultValue?: NodeJS.ProcessEnv[T]): NonNullable<NodeJS.ProcessEnv[T]> {
-    const value = process.env[key];
-  
+
+// Hicimos esto porque cuando accedemos a process.env.PORT, Typescript lo ve así string | undefined, es un reflejo de cómo él lo ve
+interface ENV {
+  NODE_ENV: string | undefined; 
+  PORT: number | undefined;
+  DATABASE_URL: string | undefined;
+  API_URL: string | undefined;
+  API_URL_STORE: string | undefined;
+  API_KEY: string | undefined;
+  STEAM_ID: string | undefined;
+}
+
+// Aquí le digo, vale Typescript pero yo quiero que estén definidas y deben verse así:
+interface Config {
+  NODE_ENV: string;
+  PORT: number;
+  DATABASE_URL: string;
+  API_URL: string;
+  API_URL_STORE: string;
+  API_KEY: string;
+  STEAM_ID: string;
+}
+
+
+const getEnv = (): ENV => {
+  return {
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
+    DATABASE_URL: process.env.DATABASE_URL,
+    API_URL: process.env.API_URL,
+    API_URL_STORE: process.env.API_URL_STORE,
+    API_KEY: process.env.API_KEY,
+    STEAM_ID: process.env.STEAM_ID_64
+  }
+}
+
+const validateEnv = (config: ENV): Config => {
+  for(const [key, value] of Object.entries(config)) {
     if (value === undefined) {
-      if (defaultValue !== undefined) {
-        return defaultValue;
-      }
-      logger.error(`Missing environment variables:" ${key}`)
-      throw new Error(`Missing environment variables: ${key}`);
+      throw new Error(`Missing key ${key} in .env`);
     }
-  
-    return value as NonNullable<NodeJS.ProcessEnv[T]>; // Typescript inferirá el valor devuelto siempre como string
+  }
+  return config as Config;
 }
 
-// TODO: Hacer un barrido inicial de todas las variables para ver si están seteadas
-const nodeEnv = getEnv('NODE_ENV', 'development');
-const port = getEnv('PORT', '3000');
-const databaseUri = getEnv('DATABASE_URL');
-const apiUrl = getEnv('API_URL');
-const apiUrlStore = getEnv('API_URL_STORE');
-const apiKey = getEnv('API_KEY');
-const steamId = getEnv('STEAM_ID_64');
+const variablesEnv = getEnv();
+const validatedEnv = validateEnv(variablesEnv);
 
-export const config = {
-    nodeEnv,
-    port,
-    databaseUri,
-    apiUrl,
-    apiUrlStore,
-    apiKey,
-    steamId
-}
+export default validatedEnv;
