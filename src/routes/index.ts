@@ -8,7 +8,7 @@ const router = Router();
 const gamesController = new GameController();
 
 // Se ejecutan en este orden: middleware1 -> middleware2 -> controladorFinal
-router.get(`/search`, validateAuthParams, gamesController.getGames.bind(gamesController));
+router.get(`/search`, validateAuthParams, gamesController.getGame.bind(gamesController));
 //router.get(`/game/:gameName/add`, addGame); 
 /*router.get(`/dashboard`, getAchivementStats); */
 

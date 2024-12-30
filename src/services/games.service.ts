@@ -9,11 +9,13 @@ export class GameService {
         this.apiRepository = new ApiRepository();
     }
 
-     public async getGames(name: string) {
-        console.log("Estoy en el Servicio y me ha llegado esto:", name)
-        const gameList = await this.apiRepository.getGames(name); // devuelve una maldita promesa el getGames por eso el await pa que se resuelva
-        console.log("GameList:", gameList);
-        return gameList;
+    public async getGamesWithLockedAchievements(name: string) {
+        console.log("Estoy en el SERVICIO y me ha llegado esto:", name)
+        const games = await this.apiRepository.getGameWithAchievements(name); // devuelve una maldita promesa el getGames por eso el await pa que se resuelva
+        //console.log("GameListService:", gameList);
+     
+
+        return games;
 
     }
 }

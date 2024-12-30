@@ -9,9 +9,9 @@ export class GameController {
         this.gameService = new GameService();
     }
 
-    public getGames = async (req: Request, res: Response) => {
+    public getGame = async (req: Request, res: Response) => {
         const gameName = String(req.query.name);
-        const games = await this.gameService.getGames(gameName);        
+        const games = await this.gameService.getGamesWithLockedAchievements(gameName);        
         res.json(games)
     }
 
