@@ -17,43 +17,14 @@ class ApiRepository {
         this.STEAM_ID = config.STEAM_ID;
     }
 
-    async getGameWithAchievements(gameName: string) {
-        console.log("Estoy en el REPOSITORY me ha llegado esto:", gameName);
-
-        const gameDetails = await this.getGameDetails(gameName);      
-        console.log("GAMEDETAILS", gameDetails);
-        const [ game ]= gameDetails;
-        const { id, name, tiny_image } = game;
-
-        //FIX: Cuando el jugador no tiene el juego en Steam
-        const achievements = await this.getPlayerLockedAchivements(id);
-
-        if (!achievements.success) {
-            return achievements;
-        }
-        console.log("hello?");
-        
-        //TODO: crea y usa la interfaz Game
-        return {
-            id,
-            name,
-            cover: tiny_image,
-            achievements
-        }
-    }
-
-    async getGameDetails(name: string) {        
-        const CC = 'es';
+    async getOwnedGames() {    
 
         try {
-            const response = await axios.get(`${this.API_URL_STORE}/storesearch?term=${name}&cc=${CC}`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
-            const games = response.data.items;
+            const response = await axios.get(`${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
+            const games = response.data.response.games;
 
-            //TODO: Mejorar buscador para que no coja soundtracks y dlcs
-            const regex = new RegExp(`^${name}$`, 'i');
-            const game = games.filter((game: any) => regex.test(game.name));
-
-            return game;
+            const gamesDetails = games.map((game: { appid: number; name: string; }) => ({ appid: game.appid, name: game.name }));
+            return gamesDetails;
 
          } catch (error) {
             logger.error("Failed to fetch games from Steam API:", error);
@@ -62,14 +33,13 @@ class ApiRepository {
     }
 
 
-    async getPlayerLockedAchivements(gameId: number) {
-        console.log("gameid:", gameId);
+    async getPlayerLockedAchivements(appId: number) {
         
         try {
-            const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${gameId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
+            const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
             const unachieved = response.data.playerstats.achievements;
             
-            const achievementsDetails = await this.getAchievementsDetails(gameId);
+            const achievementsDetails = await this.getAchievementsDetails(appId);
             const unachievedFiltered = unachieved.filter((achievement: { achieved: number }) => achievement.achieved === 0);
 
             const playerLockedAchivements = achievementsDetails
@@ -95,10 +65,10 @@ class ApiRepository {
     }
 
 
-    async getAchievementsDetails(gameId: number) {
+    async getAchievementsDetails(appId: number) {
 
         try {
-            const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/?key=${this.API_KEY}&appid=${gameId}`);
+            const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/?key=${this.API_KEY}&appid=${appId}`);
             const achievementsDetails = response.data.game.availableGameStats.achievements;
             //TODO: crea y usa la interfaz achievement
             return achievementsDetails.map((achievement: any) => ({

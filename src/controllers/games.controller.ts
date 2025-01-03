@@ -10,9 +10,19 @@ export class GameController {
     }
 
     public getGame = async (req: Request, res: Response) => {
-        const gameName = String(req.query.name);
-        const games = await this.gameService.getGamesWithLockedAchievements(gameName);        
-        res.json(games)
+        const gameName = String(req.query.game);
+        
+        const game = await this.gameService.getGame(gameName);  
+
+        if (game === undefined) {
+            return {
+                code: 404,
+                message: "Game not found in your library",
+                success: false
+            }
+        }
+
+        res.json(game)
     }
 
 }
