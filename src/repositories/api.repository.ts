@@ -2,17 +2,15 @@ import axios from 'axios';
 
 import config from '../config';
 import logger from '../config/logger'
-
+import { GameDto, AchievementDto } from '../models/DTOs/gameDto';
 
 class ApiRepository {
     private API_URL: string;
-    private API_URL_STORE: string;
     private API_KEY: string;
     private STEAM_ID: string;
 
     constructor() {
         this.API_URL = config.API_URL;
-        this.API_URL_STORE = config.API_URL_STORE;
         this.API_KEY = config.API_KEY;
         this.STEAM_ID = config.STEAM_ID;
     }
@@ -23,17 +21,22 @@ class ApiRepository {
             const response = await axios.get(`${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
             const games = response.data.response.games;
 
-            const gamesDetails = games.map((game: { appid: number; name: string; }) => ({ appid: game.appid, name: game.name }));
+            const gamesDetails = games.map((game: { appid: number; name: string; }) => ({ 
+                gameId: game.appid, 
+                name: game.name 
+            }) as GameDto);
+
             return gamesDetails;
 
          } catch (error) {
             logger.error("Failed to fetch games from Steam API:", error);
-            throw new Error("Failed to fetch games from Steam API");
+            throw new Error("Failed to fetch Games from Steam API");
          }
     }
 
 
     async getPlayerLockedAchivements(appId: number) {
+        console.log("estoy en el getPlayerLockedAchivements", appId);
         
         try {
             const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
@@ -47,20 +50,19 @@ class ApiRepository {
                     const matchingUnachieved = unachievedFiltered.find((unachieved: { apiname: string; }) => unachieved.apiname === achievement.value);
 
                     if (matchingUnachieved) {
-                        return {...achievement, achieved: matchingUnachieved.achieved} // crea una copia del obj con todas sus propiedades y le añade una nueva
+                        return {
+                            ...achievement, // crea una copia del obj con todas sus propiedades 
+                            achieved: matchingUnachieved.achieved // y le añade esta 
+                        } as AchievementDto;  // el obj que retorna map cumple con la estructura de este DTO
                     }
                 })
-                .filter((achievement: undefined) => achievement !== undefined)
-            
+                .filter((achievement: AchievementDto | undefined) => achievement !== undefined)
+                        
             return playerLockedAchivements;
 
         } catch (error) {
             logger.error("Failed to fetch Achievements from Steam API:", error);
-            return {
-                code: 400,
-                message: "El jugador no tiene este juego",
-                success: false
-            }
+            throw new Error("Failed to fetch Achievements from Steam API");
         }
     }
 
@@ -70,7 +72,7 @@ class ApiRepository {
         try {
             const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/?key=${this.API_KEY}&appid=${appId}`);
             const achievementsDetails = response.data.game.availableGameStats.achievements;
-            //TODO: crea y usa la interfaz achievement
+            
             return achievementsDetails.map((achievement: any) => ({
                 name: achievement.displayName,
                 value: achievement.name,

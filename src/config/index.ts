@@ -5,8 +5,11 @@ dotenv.config({ path: path.resolve(__dirname, "./.env")}); // se usa path.resolv
 
 //console.debug(dotenv.config({ path: path.resolve(__dirname, "./.env")}));
 
+/**
+ * Hice esto porque cuando accedemos a process.env.PORT
+ * Typescript lo ve así string | undefined, es un reflejo de cómo él lo ve
+ */
 
-// Hicimos esto porque cuando accedemos a process.env.PORT, Typescript lo ve así string | undefined, es un reflejo de cómo él lo ve
 interface ENV {
   NODE_ENV: string | undefined; 
   PORT: number | undefined;
