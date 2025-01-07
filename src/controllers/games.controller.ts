@@ -10,25 +10,16 @@ export class GameController {
         this.gameService = new GameService();
     }
 
-    public getGame = async (req: Request, res: Response) => {
-        
+    public searchGame = async (req: Request, res: Response) => {
         
         try {
 
             const gameName = String(req.query.game);
-            const games = await this.gameService.getGameLibrary();
-            const game = await this.gameService.getGame(gameName, games);  
-            console.log("GAME", game);
-
-            const achievementsDto = await this.gameService.getLockedAchievements(game.gameId);  
-
-            const gameDetails: GameDetailsDto = {
-                gameId: game.gameId,
-                name: game.name,
-                achievements: achievementsDto
-            }
-        
-            res.json(gameDetails)
+            const gamesLibrary = await this.gameService.getGameLibrary();
+            const games = await this.gameService.findGames(gameName, gamesLibrary);  
+            console.log("CONTROLLER ESTOS SON LOS GAMES", games);
+            
+            res.json(games)
             
         } catch (error) {
             const errorMessage = (error as Error).message; // Aserción de tipo
@@ -38,8 +29,28 @@ export class GameController {
                 }
             )
         }
+    }
+
+    public gameData = async (req: Request, res:Response) => {
+        const { gameId } = req.params;
+        console.log("Request", req);
         
+        console.log("GAMEID:", gameId);
+
+        const achievements = await this.gameAchievementsDetails(Number(gameId));
+
+        //const gameData: GameDetailsDto = {
+            
+        //}
+        //res.json(gameData);
+
+
+    }
+
+    public gameAchievementsDetails = async (gameId: number) => {
         
+        const achievementsDto = await this.gameService.getLockedAchievements(gameId);  
+        return achievementsDto;
     }
 
 }

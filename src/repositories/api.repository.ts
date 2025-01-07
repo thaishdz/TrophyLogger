@@ -35,14 +35,15 @@ class ApiRepository {
     }
 
 
-    async getPlayerLockedAchivements(appId: number) {
-        console.log("estoy en el getPlayerLockedAchivements", appId);
+    async getPlayerLockedAchivements(gameId: number) {
+        console.log("estoy en el getPlayerLockedAchivements", gameId);
         
         try {
-            const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
+
+            const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${gameId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
             const unachieved = response.data.playerstats.achievements;
             
-            const achievementsDetails = await this.getAchievementsDetails(appId);
+            const achievementsDetails = await this.getAchievementsDetails(gameId);
             const unachievedFiltered = unachieved.filter((achievement: { achieved: number }) => achievement.achieved === 0);
 
             const playerLockedAchivements = achievementsDetails

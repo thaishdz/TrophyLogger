@@ -1,9 +1,8 @@
-import { ratio } from "fuzzball";
+import Fuse from 'fuse.js'; // mi santo grial para realizar las búsquedas
 import logger from '../config/logger'
 import ApiRepository from '../repositories/api.repository';
 import { GameDto } from "../models/DTOs/gameDto";
 
-// Actúa como intermediario entre el repositorio y la lógica de negocio.
 export class GameService {
 
     private apiRepository: ApiRepository;
@@ -18,35 +17,38 @@ export class GameService {
         return games;
     }
 
-    public async getGame (gameName: string, games: GameDto[]) {
-        console.log("Estoy en el SERVICIO: getGame")
+    public async findGames (gameName: string, gamesLibrary: GameDto[]) {
+        console.log("Estoy en el SERVICIO: findGames", gameName)
         
         try {
-            const game = games.find((game: GameDto) => {
-                const score = ratio(game.name.toLowerCase(), gameName.toLowerCase());
-                //console.log("SCORE de Juego INPUT con Juego", score, gameName.toLowerCase(), game.name.toLowerCase());
-                return score > 70; // Umbral de similitud
-            });
-            console.log("GAME getGame:", game);
+            const options = {
+                keys: ["name"],
+                isCaseSensitive: false
+              };
+              
+            const fuse = new Fuse(gamesLibrary, options);
+            
+            const results = fuse.search(gameName);
+            const games = results.map((result: {item: GameDto}) => result.item);
+            console.log("GAMES findGames:", games);
  
-            if (game === undefined) {
+            if (!games) {
                 throw new Error("Game not found in your library");
             }
-            
-            return game;
+
+            return games;
             
         } catch (error) {
             logger.error("Failed to fetch Game from Steam API:", error);
             throw new Error((error as Error).message);
         }
-        
     }
 
-    public async getLockedAchievements(appid: number, name?: string) {
+
+    public async getLockedAchievements(gameId: number) {
 
         try {
-
-            const achievementsLockedDetailsDto = await this.apiRepository.getPlayerLockedAchivements(appid);
+            const achievementsLockedDetailsDto = await this.apiRepository.getPlayerLockedAchivements(gameId);
             console.log("ACHIEVEMENTS?", achievementsLockedDetailsDto);
 
             if (!achievementsLockedDetailsDto) {
