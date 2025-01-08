@@ -10,7 +10,7 @@ const gamesController = new GameController();
 // Se ejecutan en este orden: middleware1 -> middleware2 -> controladorFinal
 /*router.get(`/dashboard`, getAchivementStats); */
 router.get(`/search`, validateAuthParams, gamesController.searchGame.bind(gamesController));
-router.get(`/gameAchievements/{gameId}`, validateAuthParams, gamesController.gameData.bind(gamesController)); 
+router.get(`/gameAchievements/:gameId`, validateAuthParams, gamesController.gameAchievements.bind(gamesController)); 
 
 
 

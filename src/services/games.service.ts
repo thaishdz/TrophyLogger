@@ -2,6 +2,7 @@ import Fuse from 'fuse.js'; // mi santo grial para realizar las búsquedas
 import logger from '../config/logger'
 import ApiRepository from '../repositories/api.repository';
 import { GameDto } from "../models/DTOs/gameDto";
+import { forEach } from 'lodash';
 
 export class GameService {
 
@@ -12,25 +13,29 @@ export class GameService {
     }
 
     public async getGameLibrary() {
-        // devuelve una promesa el getOwnedGames por eso el await pa que se resuelva
-        const games = await this.apiRepository.getOwnedGames(); 
-        return games;
+        try {
+            // devuelve una promesa el getOwnedGames por eso el await pa que se resuelva
+            const gamesLibrary = await this.apiRepository.getOwnedGames(); 
+            return gamesLibrary; 
+        } catch (error) {
+            throw new Error("Error fetching games");
+        }
     }
 
-    public async findGames (gameName: string, gamesLibrary: GameDto[]) {
+    public findGames (gameName: string, gamesLibrary: GameDto[]) {
         console.log("Estoy en el SERVICIO: findGames", gameName)
         
         try {
             const options = {
-                keys: ["name"],
-                isCaseSensitive: false
+                keys: ["name"], // La búsqueda es por la clave "name"
+                isCaseSensitive: false,
+                threshold: 0.2 // - Reducir para ser más exacto | + Aumentar para que se le vaya la bola
               };
               
             const fuse = new Fuse(gamesLibrary, options);
             
             const results = fuse.search(gameName);
             const games = results.map((result: {item: GameDto}) => result.item);
-            console.log("GAMES findGames:", games);
  
             if (!games) {
                 throw new Error("Game not found in your library");
@@ -45,7 +50,7 @@ export class GameService {
     }
 
 
-    public async getLockedAchievements(gameId: number) {
+    public async lockedAchievements(gameId: number) {
 
         try {
             const achievementsLockedDetailsDto = await this.apiRepository.getPlayerLockedAchivements(gameId);
@@ -58,9 +63,27 @@ export class GameService {
             return achievementsLockedDetailsDto;
 
         } catch (error) {
-            throw new Error((error as Error).message);
+            throw new Error("Error fetching achievements");
         }
-        
-
     }
+
+    public async coverGame(games: any) {
+
+        try {
+            const gamesWithCover = await Promise.all(games.map(async (game: {
+                gameId: number; 
+                name: string; 
+            }) => {
+                const cover = await this.apiRepository.getCoverGame(game.name, game.gameId);
+                return {...game, cover};
+            }));
+            console.log("Games with cover SERVICE:", gamesWithCover);
+        
+            return gamesWithCover;
+
+        } catch (error) {
+            throw new Error("Error fetching cover game");
+        }
+    }
+
 }

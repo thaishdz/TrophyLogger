@@ -16,41 +16,55 @@ export class GameController {
 
             const gameName = String(req.query.game);
             const gamesLibrary = await this.gameService.getGameLibrary();
-            const games = await this.gameService.findGames(gameName, gamesLibrary);  
-            console.log("CONTROLLER ESTOS SON LOS GAMES", games);
+            const matchingGames = await this.gameService.findGames(gameName, gamesLibrary);
+            const gamesWithCover = await this.gameService.coverGame(matchingGames);
             
-            res.json(games)
+            res.json({matchingGames: gamesWithCover})
             
         } catch (error) {
-            const errorMessage = (error as Error).message; // Aserción de tipo
-            res.status(404).send(
-                { 
-                    error: errorMessage
-                }
-            )
+            const message = (error as Error).message; // Aserción de tipo
+            res.status(404).json({ error: message});
         }
     }
 
-    public gameData = async (req: Request, res:Response) => {
-        const { gameId } = req.params;
-        console.log("Request", req);
+    public gameAchievements = async (req: Request, res:Response) => {
         
-        console.log("GAMEID:", gameId);
+        try {
+            const gameId = Number(req.params.gameId); 
 
-        const achievements = await this.gameAchievementsDetails(Number(gameId));
+            if (isNaN(gameId)) {
+                res.status(400).json({error: "Invalid gameId"})
+            }
 
-        //const gameData: GameDetailsDto = {
+            const achievements = await this.gameAchievementsDetails(gameId);
+
+            const gameAchievements: GameDetailsDto = {
+                gameId,
+                name: achievements?.name,
+                achievements 
+            }
             
-        //}
-        //res.json(gameData);
-
+            res.json(gameAchievements);
+            
+        } catch (error) {
+            const message = (error as Error).message;
+            res.status(500).json({error: message});
+            
+        }
+        
 
     }
 
     public gameAchievementsDetails = async (gameId: number) => {
         
-        const achievementsDto = await this.gameService.getLockedAchievements(gameId);  
-        return achievementsDto;
+        try {
+            const achievementsDto = await this.gameService.lockedAchievements(gameId);  
+            return achievementsDto;
+            
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+       
     }
 
 }
