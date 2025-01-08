@@ -2,7 +2,6 @@ import Fuse from 'fuse.js'; // mi santo grial para realizar las búsquedas
 import logger from '../config/logger'
 import ApiRepository from '../repositories/api.repository';
 import { GameDto } from "../models/DTOs/gameDto";
-import { forEach } from 'lodash';
 
 export class GameService {
 
