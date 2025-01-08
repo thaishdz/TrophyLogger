@@ -1,13 +1,16 @@
 import { Request, Response } from 'express';
 import { GameService } from '../services/games.service';
 import { GameDetailsDto } from '../models/DTOs/gameDto';
+import ApiRepository from '../repositories/api.repository';
 
 export class GameController {
     private gameService: GameService;
+    private apiRepository: ApiRepository;
 
 
     constructor() {
         this.gameService = new GameService();
+        this.apiRepository = new ApiRepository();
     }
 
     public searchGame = async (req: Request, res: Response) => {
@@ -15,11 +18,11 @@ export class GameController {
         try {
 
             const gameName = String(req.query.game);
-            const gamesLibrary = await this.gameService.getGameLibrary();
-            const matchingGames = await this.gameService.findGames(gameName, gamesLibrary);
-            const gamesWithCover = await this.gameService.coverGame(matchingGames);
+            // Refactor: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en Mongo
+            const gamesLibraryDto = await this.gameService.getGameLibrary();
+            const matchingGames = await this.gameService.findGames(gameName, gamesLibraryDto);
             
-            res.json({matchingGames: gamesWithCover})
+            res.json({matchingGames: matchingGames})
             
         } catch (error) {
             const message = (error as Error).message; // Aserción de tipo
@@ -36,14 +39,14 @@ export class GameController {
                 res.status(400).json({error: "Invalid gameId"})
             }
 
-            const achievements = await this.gameAchievementsDetails(gameId);
-
+            const { gameName, total, playerLockedAchievements } = await this.gameService.lockedAchievements(gameId);
+                        
             const gameAchievements: GameDetailsDto = {
                 gameId,
-                name: achievements?.name,
-                achievements 
-            }
-            
+                name: gameName,
+                cover: await this.apiRepository.getCoverGame(gameName, gameId),
+                achievements: {total, playerLockedAchievements}
+            };
             res.json(gameAchievements);
             
         } catch (error) {
@@ -51,20 +54,6 @@ export class GameController {
             res.status(500).json({error: message});
             
         }
-        
-
-    }
-
-    public gameAchievementsDetails = async (gameId: number) => {
-        
-        try {
-            const achievementsDto = await this.gameService.lockedAchievements(gameId);  
-            return achievementsDto;
-            
-        } catch (error) {
-            throw new Error((error as Error).message);
-        }
-       
     }
 
 }

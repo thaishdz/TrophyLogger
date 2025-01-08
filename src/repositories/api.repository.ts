@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import config from '../config';
 import logger from '../config/logger'
-import { GameDto, AchievementDto } from '../models/DTOs/gameDto';
+import { AchievementDto } from '../models/DTOs/gameDto';
 
 class ApiRepository {
     private API_URL: string;
@@ -22,14 +22,8 @@ class ApiRepository {
 
         try {
             const response = await axios.get(`${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
-            const games = response.data.response.games;
-
-            const gamesDetails = games.map((game: { appid: number; name: string; }) => ({ 
-                gameId: game.appid, 
-                name: game.name 
-            }) as GameDto);
-
-            return gamesDetails;
+            const gamesLibrary = response.data.response.games;
+            return gamesLibrary;
 
          } catch (error) {
             logger.error("Failed to fetch games from Steam API:", error);
@@ -38,31 +32,37 @@ class ApiRepository {
     }
 
 
-    async getPlayerLockedAchivements(gameId: number) {
-        console.log("estoy en el getPlayerLockedAchivements", gameId);
+    async getPlayerLockedAchievements(gameId: number) {
         
         try {
 
-            const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${gameId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
+            const response = await axios
+                .get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${gameId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
+            
+            const gameName = response.data.playerstats.gameName;
             const achievements = response.data.playerstats.achievements;
             
             const achievementsDetails = await this.getAchievementsDetails(gameId);
             const unachievedFiltered = achievements.filter((achievement: { achieved: number }) => achievement.achieved === 0);
+            const totalAchievementsLocked = unachievedFiltered.length;
+            
 
-            const playerLockedAchivements = achievementsDetails
+            const playerLockedAchievements = achievementsDetails
                 .map((achievement: { value: string; }) => { 
-                    const matchingUnachieved = unachievedFiltered.find((unachieved: { apiname: string; }) => unachieved.apiname === achievement.value);
+                    const matchingUnachieved = unachievedFiltered
+                    .find((unachieved: { apiname: string; achieved: boolean; }) => unachieved.apiname === achievement.value);
 
                     if (matchingUnachieved) {
                         return {
                             ...achievement, // crea una copia del obj con todas sus propiedades 
                             achieved: matchingUnachieved.achieved // y le añade esta 
-                        } as AchievementDto;  // el obj que retorna map cumple con la estructura de este DTO
+                        }
                     }
                 })
-                .filter((achievement: AchievementDto | undefined) => achievement !== undefined)
-      
-            return playerLockedAchivements;
+                // En este paso, quito los achievements que estén undefined
+                .filter((achievement: any) => achievement !== undefined) as AchievementDto[];  // el obj que retorna cumple con la estructura del DTO
+
+            return {gameName, totalAchievementsLocked, playerLockedAchievements};
 
         } catch (error) {
             logger.error("Failed to fetch Achievements from Steam API:", error);
@@ -92,16 +92,14 @@ class ApiRepository {
     }
 
     async getCoverGame(gameName:string, gameId: number) {
+        
         try {
-            console.log("REPO este es el gameNAME", gameId);
             
             const response = await axios.get(`${this.API_URL_STORE}/storesearch?term=${gameName}&cc=es`);
             
             const game = response.data.items.find((item: { id: number; }) => item.id === gameId);
-            const cover = game.tiny_image;
-            console.log("Esta es la cover", cover);
-            
-            return cover;
+            return game?.tiny_image || ''; // la cover, retorna '' si game es undefined
+
         } catch (error) {
             logger.error("Failed to fetch Cover game from Steam API:", error);
             throw new Error("Failed to fetch Cover game from Steam API")

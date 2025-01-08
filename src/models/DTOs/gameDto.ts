@@ -1,19 +1,25 @@
 
 
 export interface GameDetailsDto extends GameDto {
-    achievements: AchievementDto[]
+    achievements: AchievementsDto
 }
 
 export interface GameDto {
     gameId: number,
-    name: string
+    name: string,
+    cover: string
+}
+
+export interface AchievementsDto {
+    total: number,
+    playerLockedAchievements: AchievementDto[];
 }
 
 export interface AchievementDto {
-    name: string,
-    value: string,
-    description: string,
-    icon: string
-    achieved: boolean
+    name: string;
+    value: string;
+    description: string;
+    icon: string;
+    achieved: boolean;
 }
 

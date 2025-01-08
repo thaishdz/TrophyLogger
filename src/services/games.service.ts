@@ -1,7 +1,7 @@
 import Fuse from 'fuse.js'; // mi santo grial para realizar las búsquedas
 import logger from '../config/logger'
 import ApiRepository from '../repositories/api.repository';
-import { GameDto } from "../models/DTOs/gameDto";
+import { GameDto, AchievementDto } from "../models/DTOs/gameDto";
 
 export class GameService {
 
@@ -12,18 +12,25 @@ export class GameService {
     }
 
     public async getGameLibrary() {
+
         try {
             // devuelve una promesa el getOwnedGames por eso el await pa que se resuelva
             const gamesLibrary = await this.apiRepository.getOwnedGames(); 
-            return gamesLibrary; 
+            const gamesDetailsDto = await Promise.all(gamesLibrary.map(async (game: { appid: number; name: string; }) => ({ 
+                gameId: game.appid, 
+                name: game.name,
+                cover: await this.apiRepository.getCoverGame(game.name, game.appid)
+            }) as GameDto));
+            
+            return gamesDetailsDto; 
+
         } catch (error) {
             throw new Error("Error fetching games");
         }
     }
 
     public findGames (gameName: string, gamesLibrary: GameDto[]) {
-        console.log("Estoy en el SERVICIO: findGames", gameName)
-        
+
         try {
             const options = {
                 keys: ["name"], // La búsqueda es por la clave "name"
@@ -49,39 +56,15 @@ export class GameService {
     }
 
 
-    public async lockedAchievements(gameId: number) {
-
+    public async lockedAchievements(gameId: number): Promise<{ gameName: string; total: number; playerLockedAchievements: AchievementDto[] }> {
         try {
-            const achievementsLockedDetailsDto = await this.apiRepository.getPlayerLockedAchivements(gameId);
-            console.log("ACHIEVEMENTS?", achievementsLockedDetailsDto);
-
-            if (!achievementsLockedDetailsDto) {
-                return 
-            }
+            const {gameName, totalAchievementsLocked, playerLockedAchievements} = await this.apiRepository.getPlayerLockedAchievements(gameId);
             
-            return achievementsLockedDetailsDto;
-
+            if (!playerLockedAchievements) return {gameName, "total": totalAchievementsLocked, playerLockedAchievements: []};
+            
+            return {gameName, "total": totalAchievementsLocked, playerLockedAchievements};
         } catch (error) {
             throw new Error("Error fetching achievements");
-        }
-    }
-
-    public async coverGame(games: any) {
-
-        try {
-            const gamesWithCover = await Promise.all(games.map(async (game: {
-                gameId: number; 
-                name: string; 
-            }) => {
-                const cover = await this.apiRepository.getCoverGame(game.name, game.gameId);
-                return {...game, cover};
-            }));
-            console.log("Games with cover SERVICE:", gamesWithCover);
-        
-            return gamesWithCover;
-
-        } catch (error) {
-            throw new Error("Error fetching cover game");
         }
     }
 
