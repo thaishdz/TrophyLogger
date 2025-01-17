@@ -1,9 +1,16 @@
 import axios from 'axios';
-import _ from 'lodash';
+import _, { unescape } from 'lodash';
 
 import config from '../config';
 import logger from '../config/logger'
-import { AchievementDto } from '../models/DTOs/gameDto';
+
+
+import { AchievementDetails, 
+        AchievementsLockedData, 
+        AchievementPlayerAchievedStats, 
+        AchievementApiResponse,
+        AchievementPlayerData
+    } from '../types/achievement';
 
 class ApiRepository {
     private API_URL: string;
@@ -32,37 +39,27 @@ class ApiRepository {
     }
 
 
-    async getPlayerLockedAchievements(gameId: number) {
+    async getPlayerLockedAchievements(gameId: number): Promise<AchievementPlayerData> {
         
         try {
-
             const response = await axios
                 .get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${gameId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
             
-            const gameName = response.data.playerstats.gameName;
-            const achievements = response.data.playerstats.achievements;
-            
-            const achievementsDetails = await this.getAchievementsDetails(gameId);
-            const unachievedFiltered = achievements.filter((achievement: { achieved: number }) => achievement.achieved === 0);
-            const totalAchievementsLocked = unachievedFiltered.length;
-            
+            const gameName: string = response.data.playerstats.gameName;
+            const achievementPlayerAchievedStats: AchievementPlayerAchievedStats[] = response.data.playerstats.achievements;
+            const achievementsDetails: AchievementDetails[] = await this.getAchievementsDetails(gameId);
 
-            const playerLockedAchievements = achievementsDetails
-                .map((achievement: { value: string; }) => { 
-                    const matchingUnachieved = unachievedFiltered
-                    .find((unachieved: { apiname: string; achieved: boolean; }) => unachieved.apiname === achievement.value);
+            //TODO: Consider moving this part to a new service ---> achievements.service.ts
+            const playerLockedAchievementsData = this.getAchievementsLockedData(achievementPlayerAchievedStats, achievementsDetails);
+            const totalAchievementsLocked: number = playerLockedAchievementsData.length;
 
-                    if (matchingUnachieved) {
-                        return {
-                            ...achievement, // crea una copia del obj con todas sus propiedades 
-                            achieved: matchingUnachieved.achieved // y le añade esta 
-                        }
-                    }
-                })
-                // En este paso, quito los achievements que estén undefined
-                .filter((achievement: any) => achievement !== undefined) as AchievementDto[];  // el obj que retorna cumple con la estructura del DTO
+            const playerLockedAchievements: AchievementPlayerData = {
+                gameName, 
+                totalLocked: totalAchievementsLocked, 
+                playerAchievementsData: playerLockedAchievementsData
+            }
 
-            return {gameName, totalAchievementsLocked, playerLockedAchievements};
+            return playerLockedAchievements;
 
         } catch (error) {
             logger.error("Failed to fetch Achievements from Steam API:", error);
@@ -70,14 +67,36 @@ class ApiRepository {
         }
     }
 
+    // TODO: Consider moving this function to a new service achievements.service.ts
+    getAchievementsLockedData(achievementPlayerAchievedStats: AchievementPlayerAchievedStats[], achievementsDetails: AchievementDetails[]): AchievementsLockedData[] {
 
-    async getAchievementsDetails(appId: number) {
+        const unachievedsFiltered: AchievementPlayerAchievedStats[] = achievementPlayerAchievedStats
+            .filter((achievement: AchievementPlayerAchievedStats) => achievement.achieved === 0);
+
+        const achievementsLockedData: AchievementsLockedData[]  = achievementsDetails
+            .map((achievementDetail: AchievementDetails)  => { 
+
+                const matchingUnachieved: AchievementPlayerAchievedStats | undefined = unachievedsFiltered
+                    .find((unachieved: AchievementPlayerAchievedStats) => unachieved.apiname === achievementDetail.value);
+
+                return matchingUnachieved ? {
+                    ...achievementDetail, // crea una copia del obj con todas sus propiedades 
+                    achieved: matchingUnachieved.achieved // y le añade esta 
+                } : undefined
+            })
+            // con el filter nos aseguramos que el map siempre devuelva un valor
+            .filter((lockedAchievementData): lockedAchievementData is AchievementsLockedData => lockedAchievementData !== undefined);          
+        
+        return achievementsLockedData;
+    }
+
+    async getAchievementsDetails(appId: number): Promise<AchievementDetails[]> {
 
         try {
             const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/?key=${this.API_KEY}&appid=${appId}`);
-            const achievementsDetails = response.data.game.availableGameStats.achievements;
+            const achievementsResponse: AchievementApiResponse[] = response.data.game.availableGameStats.achievements;            
             
-            return achievementsDetails.map((achievement: any) => ({
+            return achievementsResponse.map((achievement: AchievementApiResponse): AchievementDetails => ({
                 name: achievement.displayName,
                 value: achievement.name,
                 description: achievement.description,
@@ -91,7 +110,7 @@ class ApiRepository {
         
     }
 
-    async getCoverGame(gameName:string, gameId: number) {
+    async getCoverGame(gameName: string, gameId: number): Promise<string> {
         
         try {
             

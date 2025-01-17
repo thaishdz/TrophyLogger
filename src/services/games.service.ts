@@ -55,7 +55,7 @@ export class GameService {
         }
     }
 
-
+    // FIX: 
     public async lockedAchievements(gameId: number): Promise<{ gameName: string; total: number; playerLockedAchievements: AchievementDto[] }> {
         try {
             const {gameName, totalAchievementsLocked, playerLockedAchievements} = await this.apiRepository.getPlayerLockedAchievements(gameId);
