@@ -1,16 +1,9 @@
 import axios from 'axios';
-import _, { unescape } from 'lodash';
 
 import config from '../config';
 import logger from '../config/logger'
 
-
-import { AchievementDetails, 
-        AchievementsLockedData, 
-        AchievementPlayerAchievedStats, 
-        AchievementApiResponse,
-        AchievementPlayerData
-    } from '../types/achievement';
+import { ApiResponse } from '../types/apiResponse';
 
 class ApiRepository {
     private API_URL: string;
@@ -34,78 +27,38 @@ class ApiRepository {
 
          } catch (error) {
             logger.error("Failed to fetch games from Steam API:", error);
-            throw new Error("Failed to fetch Games from Steam API");
+            throw new RepositoryError("Failed to fetch Games from Steam API");
          }
     }
 
 
-    async getPlayerLockedAchievements(gameId: number): Promise<AchievementPlayerData> {
+    async getPlayerAchievements<Data>(gameId: number): Promise<ApiResponse<Data>> {
         
         try {
             const response = await axios
                 .get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${gameId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
             
-            const gameName: string = response.data.playerstats.gameName;
-            const achievementPlayerAchievedStats: AchievementPlayerAchievedStats[] = response.data.playerstats.achievements;
-            const achievementsDetails: AchievementDetails[] = await this.getAchievementsDetails(gameId);
+            const playerAchievementsData: Data = await response.data.playerstats;
 
-            //TODO: Consider moving this part to a new service ---> achievements.service.ts
-            const playerLockedAchievementsData = this.getAchievementsLockedData(achievementPlayerAchievedStats, achievementsDetails);
-            const totalAchievementsLocked: number = playerLockedAchievementsData.length;
-
-            const playerLockedAchievements: AchievementPlayerData = {
-                gameName, 
-                totalLocked: totalAchievementsLocked, 
-                playerAchievementsData: playerLockedAchievementsData
-            }
-
-            return playerLockedAchievements;
+            return {data: playerAchievementsData};
 
         } catch (error) {
             logger.error("Failed to fetch Achievements from Steam API:", error);
-            throw new Error("Failed to fetch Achievements from Steam API");
+            throw new RepositoryError("Failed to fetch Achievements from Steam API");
         }
     }
 
-    // TODO: Consider moving this function to a new service achievements.service.ts
-    getAchievementsLockedData(achievementPlayerAchievedStats: AchievementPlayerAchievedStats[], achievementsDetails: AchievementDetails[]): AchievementsLockedData[] {
-
-        const unachievedsFiltered: AchievementPlayerAchievedStats[] = achievementPlayerAchievedStats
-            .filter((achievement: AchievementPlayerAchievedStats) => achievement.achieved === 0);
-
-        const achievementsLockedData: AchievementsLockedData[]  = achievementsDetails
-            .map((achievementDetail: AchievementDetails)  => { 
-
-                const matchingUnachieved: AchievementPlayerAchievedStats | undefined = unachievedsFiltered
-                    .find((unachieved: AchievementPlayerAchievedStats) => unachieved.apiname === achievementDetail.value);
-
-                return matchingUnachieved ? {
-                    ...achievementDetail, // crea una copia del obj con todas sus propiedades 
-                    achieved: matchingUnachieved.achieved // y le añade esta 
-                } : undefined
-            })
-            // con el filter nos aseguramos que el map siempre devuelva un valor
-            .filter((lockedAchievementData): lockedAchievementData is AchievementsLockedData => lockedAchievementData !== undefined);          
-        
-        return achievementsLockedData;
-    }
-
-    async getAchievementsDetails(appId: number): Promise<AchievementDetails[]> {
+    async getAchievementsDetails<Data>(appId: number): Promise<ApiResponse<Data>> {
 
         try {
             const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/?key=${this.API_KEY}&appid=${appId}`);
-            const achievementsResponse: AchievementApiResponse[] = response.data.game.availableGameStats.achievements;            
+            const achievementsDetails: Data = response.data.game.availableGameStats.achievements;         
             
-            return achievementsResponse.map((achievement: AchievementApiResponse): AchievementDetails => ({
-                name: achievement.displayName,
-                value: achievement.name,
-                description: achievement.description,
-                icon: achievement.icongray
-            }));
+            return {data: achievementsDetails};
             
         } catch (error) {
             logger.error("Failed to fetch SchemaForGame from Steam API:", error);
-            throw new Error("Failed to fetch SchemaForGame from Steam API");
+            throw new RepositoryError("Failed to fetch SchemaForGame from Steam API");
         }
         
     }
@@ -121,7 +74,7 @@ class ApiRepository {
 
         } catch (error) {
             logger.error("Failed to fetch Cover game from Steam API:", error);
-            throw new Error("Failed to fetch Cover game from Steam API")
+            throw new RepositoryError("Failed to fetch Cover game from Steam API")
         }
     }
 

@@ -1,9 +1,10 @@
 import Fuse from 'fuse.js'; // mi santo grial para realizar las búsquedas
 import logger from '../config/logger'
 import ApiRepository from '../repositories/api.repository';
-import { GameDto, AchievementDto } from "../models/DTOs/gameDto";
+import { GameDto } from "../models/DTOs/gameDto";
 
-export class GameService {
+
+class GameService {
 
     private apiRepository: ApiRepository;
 
@@ -55,17 +56,6 @@ export class GameService {
         }
     }
 
-    // FIX: 
-    public async lockedAchievements(gameId: number): Promise<{ gameName: string; total: number; playerLockedAchievements: AchievementDto[] }> {
-        try {
-            const {gameName, totalAchievementsLocked, playerLockedAchievements} = await this.apiRepository.getPlayerLockedAchievements(gameId);
-            
-            if (!playerLockedAchievements) return {gameName, "total": totalAchievementsLocked, playerLockedAchievements: []};
-            
-            return {gameName, "total": totalAchievementsLocked, playerLockedAchievements};
-        } catch (error) {
-            throw new Error("Error fetching achievements");
-        }
-    }
-
 }
+
+export default GameService;

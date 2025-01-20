@@ -1,11 +1,12 @@
 
-import { Achievement } from "./achievement";
+import { AchievementPlayerData } from "./achievement";
 
-export interface Game {
+export interface GameAchievementsInfo {
     gameId: number,
     name: string,
     cover: string,
-    achievements: Achievement[]
+    totalLocked: number,
+    achievements: AchievementsLockedData[]
 }
 
 

@@ -1,16 +1,21 @@
 import { Request, Response } from 'express';
-import { GameService } from '../services/games.service';
-import { GameDetailsDto } from '../models/DTOs/gameDto';
+
+import GameService from '../services/games.service';
+import AchievementsService from '../services/achievements.service';
 import ApiRepository from '../repositories/api.repository';
+
+import { GameAchievementsInfo } from '../types/game';
 
 export class GameController {
     private gameService: GameService;
+    private achievementService: AchievementsService;
     private apiRepository: ApiRepository;
 
 
     constructor() {
         this.gameService = new GameService();
         this.apiRepository = new ApiRepository();
+        this.achievementService = new AchievementsService();
     }
 
     public searchGame = async (req: Request, res: Response) => {
@@ -18,15 +23,18 @@ export class GameController {
         try {
 
             const gameName = String(req.query.game);
-            // Refactor: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en Mongo
+            // TODO: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en BBDD
             const gamesLibraryDto = await this.gameService.getGameLibrary();
             const matchingGames = await this.gameService.findGames(gameName, gamesLibraryDto);
             
             res.json({matchingGames: matchingGames})
             
         } catch (error) {
-            const message = (error as Error).message; // Aserción de tipo
-            res.status(404).json({ error: message});
+            if (error instanceof ServiceError) {
+                res.status(500).json({error: error.message});
+            } else if (error instanceof RepositoryError) {
+                res.status(500).json({error: error.message})
+            }
         }
     }
 
@@ -39,20 +47,24 @@ export class GameController {
                 res.status(400).json({error: "Invalid gameId"})
             }
 
-            const { gameName, total, playerLockedAchievements } = await this.gameService.lockedAchievements(gameId);
-                        
-            const gameAchievements: GameDetailsDto = {
+            const { gameName, totalLocked, playerAchievementsData } = await this.achievementService.getPlayerLockedAchievements(gameId);   
+            
+            const gameAchievements: GameAchievementsInfo = {
                 gameId,
                 name: gameName,
                 cover: await this.apiRepository.getCoverGame(gameName, gameId),
-                achievements: {total, playerLockedAchievements}
+                totalLocked,
+                achievements: playerAchievementsData
             };
+
             res.json(gameAchievements);
-            
+
         } catch (error) {
-            const message = (error as Error).message;
-            res.status(500).json({error: message});
-            
+            if (error instanceof ServiceError) {
+                res.status(500).json({error: error.message});
+            } else if (error instanceof RepositoryError) {
+                res.status(500).json({error: error.message})
+            }
         }
     }
 

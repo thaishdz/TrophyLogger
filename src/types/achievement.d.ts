@@ -1,16 +1,16 @@
 
+// I know ... this is a mess ...
+
 
 export interface AchievementPlayerData {
     gameName: string,
     totalLocked: number,
     playerAchievementsData: AchievementsLockedData[]
-
 }
 
 export interface AchievementsLockedData extends AchievementDetails {
     achieved: 0 | 1;
 }
-
 
 export interface AchievementDetails {
     name: string;
@@ -20,8 +20,7 @@ export interface AchievementDetails {
 }
 
 
-///////////// Steam API /////////////////
-export interface AchievementApiResponse {
+export interface AchievementDetailsResponse {
     name: string,
     defaultvalue: number, // solo he visto que setean a 0 pero vete a saber si no es un boolean
     displayName: string,
@@ -35,4 +34,9 @@ export interface AchievementPlayerAchievedStats {
     apiname: string,
     achieved: 0 | 1,
     unlocktime: number
+}
+
+export interface GameAchievementsResponse {
+    gameName: string;
+    achievements: AchievementPlayerAchievedStats[];
 }
