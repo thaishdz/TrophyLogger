@@ -11,6 +11,7 @@ import { AchievementDetails,
     AchievementsLockedData
 } from '../types/achievement';
 
+import { ServiceError } from '../errors/serviceError';
 
 class AchievementsService {
 

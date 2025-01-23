@@ -4,7 +4,11 @@ import GameService from '../services/games.service';
 import AchievementsService from '../services/achievements.service';
 import ApiRepository from '../repositories/api.repository';
 
-import { GameAchievementsInfo } from '../types/game';
+import { GameAchievementsInfo, GameInfo } from '../types/game';
+import { ApiResponse } from '../types/apiResponse';
+
+import { ServiceError } from '../errors/serviceError';
+import { RepositoryError } from '../errors/repositoryError';
 
 export class GameController {
     private gameService: GameService;
@@ -18,16 +22,16 @@ export class GameController {
         this.achievementService = new AchievementsService();
     }
 
-    public searchGame = async (req: Request, res: Response) => {
-        
-        try {
 
-            const gameName = String(req.query.game);
+    public searchGame = async (req: Request, res: Response): Promise<void> => {
+        
+        try {            
+            const gameName: string = String(req.query.game);
             // TODO: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en BBDD
-            const gamesLibraryDto = await this.gameService.getGameLibrary();
-            const matchingGames = await this.gameService.findGames(gameName, gamesLibraryDto);
+            const gamesLibrary: GameInfo[] = await this.gameService.getGameLibrary();
+            const matchedGames = await this.gameService.findGames(gameName, gamesLibrary);
             
-            res.json({matchingGames: matchingGames})
+            res.json({matchedGames})
             
         } catch (error) {
             if (error instanceof ServiceError) {
@@ -38,7 +42,7 @@ export class GameController {
         }
     }
 
-    public gameAchievements = async (req: Request, res:Response) => {
+    public gameAchievements = async (req: Request, res:Response): Promise<void> => {
         
         try {
             const gameId = Number(req.params.gameId); 

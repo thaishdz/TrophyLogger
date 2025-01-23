@@ -5,6 +5,8 @@ import logger from '../config/logger'
 
 import { ApiResponse } from '../types/apiResponse';
 
+import { RepositoryError } from '../errors/repositoryError';
+
 class ApiRepository {
     private API_URL: string;
     private API_URL_STORE: string;
@@ -18,12 +20,12 @@ class ApiRepository {
         this.STEAM_ID = config.STEAM_ID;
     }
 
-    async getOwnedGames() {    
+    async getOwnedGames<Data>(): Promise<ApiResponse<Data>> {    
 
         try {
             const response = await axios.get(`${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
-            const gamesLibrary = response.data.response.games;
-            return gamesLibrary;
+            const gamesLibrary: Data = await response.data.response.games;
+            return {data: gamesLibrary};
 
          } catch (error) {
             logger.error("Failed to fetch games from Steam API:", error);
