@@ -1,13 +1,12 @@
 import axios from 'axios';
 
-import config from '../config';
-import logger from '../config/logger'
+import config from '../../config';
+import logger from '../../config/logger'
 
-import { ApiResponse } from '../types/apiResponse';
+import { ApiResponse } from '../../types/apiResponse';
+import { RepositoryError } from '../../errors/repositoryError';
 
-import { RepositoryError } from '../errors/repositoryError';
-
-class ApiRepository {
+class ApiHandlerService {
     private API_URL: string;
     private API_URL_STORE: string;
     private API_KEY: string;
@@ -20,11 +19,12 @@ class ApiRepository {
         this.STEAM_ID = config.STEAM_ID;
     }
 
-    async getOwnedGames<Data>(): Promise<ApiResponse<Data>> {    
+    async getOwnedGames<T>(): Promise<ApiResponse<T>> {    
 
         try {
-            const response = await axios.get(`${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`); // await se utiliza para esperar a que una promesa se resuelva o se rechace.
-            const gamesLibrary: Data = await response.data.response.games;
+            // await se usa para esperar a que una promesa se resuelva o se rechace.
+            const response = await axios.get(`${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`); 
+            const gamesLibrary: T = response.data.response.games;
             return {data: gamesLibrary};
 
          } catch (error) {
@@ -34,13 +34,13 @@ class ApiRepository {
     }
 
 
-    async getPlayerAchievements<Data>(gameId: number): Promise<ApiResponse<Data>> {
+    async getPlayerAchievements<T>(gameId: number): Promise<ApiResponse<T>> {
         
         try {
             const response = await axios
                 .get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${gameId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
             
-            const playerAchievementsData: Data = await response.data.playerstats;
+            const playerAchievementsData: T = response.data.playerstats;
 
             return {data: playerAchievementsData};
 
@@ -50,11 +50,12 @@ class ApiRepository {
         }
     }
 
-    async getAchievementsDetails<Data>(appId: number): Promise<ApiResponse<Data>> {
+    async getAchievementsDetails<T>(appId: number): Promise<ApiResponse<T>> {
 
         try {
-            const response = await axios.get(`${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/?key=${this.API_KEY}&appid=${appId}`);
-            const achievementsDetails: Data = response.data.game.availableGameStats.achievements;         
+            const response = await axios
+                .get(`${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/?key=${this.API_KEY}&appid=${appId}`);
+            const achievementsDetails: T = response.data.game.availableGameStats.achievements;         
             
             return {data: achievementsDetails};
             
@@ -82,4 +83,4 @@ class ApiRepository {
 
 }
 
-export default ApiRepository;
+export default ApiHandlerService;

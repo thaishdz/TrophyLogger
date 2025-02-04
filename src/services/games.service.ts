@@ -1,7 +1,7 @@
 import Fuse from 'fuse.js'; // mi santo grial para realizar las búsquedas
 import logger from '../config/logger'
-import ApiRepository from '../repositories/api.repository';
-import { GameInfo } from '../types/game';
+import ApiHandlerService from './api/apiHandler.service';
+import { GameData } from '../types/game';
 import { ServiceError } from '../errors/serviceError';
 
 import { ApiResponse } from '../types/apiResponse';
@@ -9,23 +9,23 @@ import { GameLibraryResponse } from '../types/game';
 
 class GameService {
 
-    private apiRepository: ApiRepository;
+    private apiService: ApiHandlerService;
 
     constructor() {
-        this.apiRepository = new ApiRepository();
+        this.apiService = new ApiHandlerService();
     }
 
-    public async getGameLibrary(): Promise<GameInfo[]> {
+    async getGamesLibrary(): Promise<GameData[]> {
 
         try {
-            const {data}: ApiResponse<GameLibraryResponse[]> = await this.apiRepository.getOwnedGames(); 
+            const { data }: ApiResponse<GameLibraryResponse[]> = await this.apiService.getOwnedGames(); 
             
-            const gamesInfo: GameInfo[] = await Promise.all(data.map(
+            const gamesInfo: GameData[] = await Promise.all(data.map(
                 async (game: GameLibraryResponse) => ({ 
                     gameId: game.appid, 
                     name: game.name,
                    // cover: await this.apiRepository.getCoverGame(game.name, game.appid)
-            }) as GameInfo));
+            }) as GameData));
             
             return gamesInfo; 
 
@@ -34,7 +34,7 @@ class GameService {
         }
     }
 
-    public findGames (gameName: string, gamesLibrary: GameInfo[]) {
+    findGames (gameName: string, gamesLibrary: GameData[]) {
         
         try {
             const options = {
@@ -46,7 +46,7 @@ class GameService {
             const fuse = new Fuse(gamesLibrary, options);
             
             const results = fuse.search(gameName);
-            const games = results.map((result: {item: GameInfo}) => result.item);
+            const games = results.map((result: {item: GameData}) => result.item);
             
             if (!games) {
                 throw new Error("Game not found in your library");

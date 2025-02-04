@@ -1,6 +1,4 @@
-
-
-import ApiRepository from '../repositories/api.repository';
+import ApiHandlerService from './api/apiHandler.service';
 import { ApiResponse } from '../types/apiResponse';
 
 import { AchievementDetails, 
@@ -15,15 +13,15 @@ import { ServiceError } from '../errors/serviceError';
 
 class AchievementsService {
 
-    private apiRepository: ApiRepository;
+    private apiService: ApiHandlerService;
 
     constructor() {
-        this.apiRepository = new ApiRepository();
+        this.apiService = new ApiHandlerService();
     }
 
     public async getPlayerLockedAchievements(gameId: number): Promise<AchievementPlayerData> {
         try {
-            const { data }: ApiResponse<GameAchievementsResponse> = await this.apiRepository.getPlayerAchievements(gameId);
+            const { data }: ApiResponse<GameAchievementsResponse> = await this.apiService.getPlayerAchievements(gameId);
             const { gameName, achievements } = data;
             
             const achievementsDetails: AchievementDetails[] = await this.getAchievementsDetails(gameId);
@@ -31,13 +29,13 @@ class AchievementsService {
             const playerLockedAchievementsData: AchievementsLockedData[] = this.getAchievementsLockedData(achievements, achievementsDetails);            
             const totalAchievementsLocked: number = playerLockedAchievementsData.length;
 
-            const playerLockedAchievements: AchievementPlayerData = {
+            const achievementsPlayerData: AchievementPlayerData = {
                 gameName, 
                 totalLocked: totalAchievementsLocked,
                 playerAchievementsData: playerLockedAchievementsData
             };
 
-            return playerLockedAchievements;
+            return achievementsPlayerData;
            
         } catch (error) {
             throw new ServiceError("Error fetching player locked achievements data");
@@ -72,7 +70,7 @@ class AchievementsService {
     public async getAchievementsDetails(gameId: number): Promise<AchievementDetails[]> {
 
         try {
-            const { data }: ApiResponse<AchievementDetailsResponse[]> = await this.apiRepository.getAchievementsDetails(gameId);
+            const { data }: ApiResponse<AchievementDetailsResponse[]> = await this.apiService.getAchievementsDetails(gameId);
 
             return data.map((achievement: AchievementDetailsResponse): AchievementDetails => ({
                 name: achievement.displayName,

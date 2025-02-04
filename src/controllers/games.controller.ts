@@ -2,23 +2,23 @@ import { Request, Response } from 'express';
 
 import GameService from '../services/games.service';
 import AchievementsService from '../services/achievements.service';
-import ApiRepository from '../repositories/api.repository';
+import ApiHandlerService from '../services/api/apiHandler.service';
 
-import { GameAchievementsInfo, GameInfo } from '../types/game';
-import { ApiResponse } from '../types/apiResponse';
+import { GameData, GameAchievementsReponse } from '../types/game';
 
 import { ServiceError } from '../errors/serviceError';
 import { RepositoryError } from '../errors/repositoryError';
+import { AchievementPlayerData } from '../types/achievement';
 
 export class GameController {
     private gameService: GameService;
     private achievementService: AchievementsService;
-    private apiRepository: ApiRepository;
+    private apiRepository: ApiHandlerService;
 
 
     constructor() {
         this.gameService = new GameService();
-        this.apiRepository = new ApiRepository();
+        this.apiRepository = new ApiHandlerService();
         this.achievementService = new AchievementsService();
     }
 
@@ -28,7 +28,7 @@ export class GameController {
         try {            
             const gameName: string = String(req.query.game);
             // TODO: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en BBDD
-            const gamesLibrary: GameInfo[] = await this.gameService.getGameLibrary();
+            const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary();
             const matchedGames = await this.gameService.findGames(gameName, gamesLibrary);
             
             res.json({matchedGames})
@@ -51,17 +51,22 @@ export class GameController {
                 res.status(400).json({error: "Invalid gameId"})
             }
 
-            const { gameName, totalLocked, playerAchievementsData } = await this.achievementService.getPlayerLockedAchievements(gameId);   
+            const playerDataAchievements: AchievementPlayerData = await this.achievementService.getPlayerLockedAchievements(gameId);
+
+            console.log(playerDataAchievements);
             
-            const gameAchievements: GameAchievementsInfo = {
+            
+            const gameData: GameData = {
                 gameId,
-                name: gameName,
-                cover: await this.apiRepository.getCoverGame(gameName, gameId),
-                totalLocked,
-                achievements: playerAchievementsData
+                name: playerDataAchievements.gameName,
+                cover: await this.apiRepository.getCoverGame(playerDataAchievements.gameName, gameId)
+            }
+            const gameAchievementsResponse: GameAchievementsReponse = {
+                data: gameData,
+                achievements: playerDataAchievements
             };
 
-            res.json(gameAchievements);
+            res.json(gameAchievementsResponse);
 
         } catch (error) {
             if (error instanceof ServiceError) {

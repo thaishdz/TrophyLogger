@@ -16,19 +16,12 @@ export interface GameLibraryResponse {
     playtime_disconnected: boolean
 }
 
-export interface GameInfo {
+export interface GameAchievementsReponse {
+    data: GameData,
+    achievements: AchievementPlayerData
+}
+export interface GameData {
     gameId: number,
     name: string,
- //   cover: string
+    cover: string
 }
-
-export interface GameAchievementsInfo {
-    gameId: number,
-    name: string,
-    cover: string,
-    totalLocked: number,
-    achievements: AchievementsLockedData[]
-}
-
-
-
