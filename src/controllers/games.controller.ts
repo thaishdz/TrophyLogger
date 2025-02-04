@@ -11,16 +11,12 @@ import { RepositoryError } from '../errors/repositoryError';
 import { AchievementPlayerData } from '../types/achievement';
 
 export class GameController {
-    private gameService: GameService;
-    private achievementService: AchievementsService;
-    private apiRepository: ApiHandlerService;
 
-
-    constructor() {
-        this.gameService = new GameService();
-        this.apiRepository = new ApiHandlerService();
-        this.achievementService = new AchievementsService();
-    }
+    constructor(
+        private gameService: GameService, 
+        private achievementService: AchievementsService, 
+        private apiService: ApiHandlerService
+    ) {}
 
 
     public searchGame = async (req: Request, res: Response): Promise<void> => {
@@ -59,7 +55,7 @@ export class GameController {
             const gameData: GameData = {
                 gameId,
                 name: playerDataAchievements.gameName,
-                cover: await this.apiRepository.getCoverGame(playerDataAchievements.gameName, gameId)
+                cover: await this.apiService.getCoverGame(playerDataAchievements.gameName, gameId)
             }
             const gameAchievementsResponse: GameAchievementsReponse = {
                 data: gameData,

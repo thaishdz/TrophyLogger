@@ -9,23 +9,25 @@ import { GameLibraryResponse } from '../types/game';
 
 class GameService {
 
-    private apiService: ApiHandlerService;
+    //INFO:
+    /* 
+    ** Al usar inyección de dependencias (DI) no solo desacoplamos la fuente de datos, 
+    ** siendo vital en caso de que un día queramos sustituirla
+    ** también facilita mockear en los tests
+    */
 
-    constructor() {
-        this.apiService = new ApiHandlerService();
-    }
+    constructor(private apiService: ApiHandlerService) {}
 
     async getGamesLibrary(): Promise<GameData[]> {
 
         try {
             const { data }: ApiResponse<GameLibraryResponse[]> = await this.apiService.getOwnedGames(); 
             
-            const gamesInfo: GameData[] = await Promise.all(data.map(
-                async (game: GameLibraryResponse) => ({ 
+            const gamesInfo: GameData[] = await Promise.all(
+                data.map(async (game: GameLibraryResponse) => ({ 
                     gameId: game.appid, 
-                    name: game.name,
-                   // cover: await this.apiRepository.getCoverGame(game.name, game.appid)
-            }) as GameData));
+                    name: game.name            
+                })));
             
             return gamesInfo; 
 

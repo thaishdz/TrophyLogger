@@ -23,5 +23,5 @@ export interface GameAchievementsReponse {
 export interface GameData {
     gameId: number,
     name: string,
-    cover: string
+    cover?: string
 }
