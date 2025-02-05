@@ -1,9 +1,9 @@
 
 import ApiHandlerService from "../../services/api/apiHandler.service";
 import GameService from "../../services/games.service";
-import { ApiResponse } from "../../types/apiResponse";
 import { GameData } from "../../types/game";
 
+// Simulo el comportamiento de la función, pero no me enfoco en la llamada HTTP de eso se encarga otro test
 jest.mock("../../services/api/apiHandler.service");
 
 describe('Retrieves the list of games owned by a Steam player from their library', () => {
@@ -15,16 +15,16 @@ describe('Retrieves the list of games owned by a Steam player from their library
         gameService = new GameService(apiServiceMock);
     });
 
-    //FIXME: Arreglar el test porque gameId da undefined 
     it('should fetch and return the list of games owned by the player', async() =>{
 
-        const apiMockResponse: ApiResponse<GameData[]> = { 
+        const apiMockResponse = { 
             data: [
-                {gameId: 1, name: "Game 1"},
-                {gameId: 2, name: "Game 2"},
-            ]};
+                {appid: 1, name: "Game 1"},
+                {appid: 2, name: "Game 2"},
+            ]
+        };
         
-        apiServiceMock.getOwnedGames.mockResolvedValue(apiMockResponse); // simulamos llamar a al API
+        apiServiceMock.getOwnedGames.mockResolvedValue(apiMockResponse); // simulamos llamar a la API
 
         const gameData: GameData[] = [
             {gameId: 1, name: "Game 1"},
@@ -39,15 +39,14 @@ describe('Retrieves the list of games owned by a Steam player from their library
         expect(apiServiceMock.getOwnedGames).toHaveBeenCalledTimes(1);
     });
 
-    // TODO: crear test si el jugador no tiene juegos y si falla la API steam
 
-    /**
-     *  it("should return an empty array if the player has no games", async () => {
-        // Test logic here...
-    });
+    it("should throw an error if the player has no games", async () => {
+        
+        const apiMockResponse = { data: [] };
+        apiServiceMock.getOwnedGames.mockResolvedValue(apiMockResponse); 
 
-    it("should throw an error if the API request fails", async () => {
-        // Test logic here...
+        const result = gameService.getGamesLibrary();
+
+        await expect(result).rejects.toThrow();
     });
-     */
 });

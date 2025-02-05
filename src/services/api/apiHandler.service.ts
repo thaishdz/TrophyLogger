@@ -4,7 +4,7 @@ import config from '../../config';
 import logger from '../../config/logger'
 
 import { ApiResponse } from '../../types/apiResponse';
-import { RepositoryError } from '../../errors/repositoryError';
+import { ServiceError } from '../../errors/serviceError';
 
 class ApiHandlerService {
     private API_URL: string;
@@ -24,12 +24,17 @@ class ApiHandlerService {
         try {
             // await se usa para esperar a que una promesa se resuelva o se rechace.
             const response = await axios.get(`${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`); 
-            const gamesLibrary: T = response.data.response.games;
+            const gamesLibrary: T = response.data.response?.games;            
+            
+            if (gamesLibrary === undefined) {
+                return {data: [] as T}
+            }
+
             return {data: gamesLibrary};
 
          } catch (error) {
             logger.error("Failed to fetch games from Steam API:", error);
-            throw new RepositoryError("Failed to fetch Games from Steam API");
+            throw new ServiceError("Failed to fetch Games Library from Steam API", "FETCH_ERROR", error);
          }
     }
 
@@ -46,7 +51,7 @@ class ApiHandlerService {
 
         } catch (error) {
             logger.error("Failed to fetch Achievements from Steam API:", error);
-            throw new RepositoryError("Failed to fetch Achievements from Steam API");
+            throw new ServiceError("Failed to fetch Achievements from Steam API", "FETCH_ERROR", error);
         }
     }
 
@@ -61,7 +66,7 @@ class ApiHandlerService {
             
         } catch (error) {
             logger.error("Failed to fetch SchemaForGame from Steam API:", error);
-            throw new RepositoryError("Failed to fetch SchemaForGame from Steam API");
+            throw new ServiceError("Failed to fetch SchemaForGame from Steam API", "FETCH_ERROR", error);
         }
         
     }
@@ -77,7 +82,7 @@ class ApiHandlerService {
 
         } catch (error) {
             logger.error("Failed to fetch Cover game from Steam API:", error);
-            throw new RepositoryError("Failed to fetch Cover game from Steam API")
+            throw new ServiceError("Failed to fetch Cover game from Steam API", "FETCH_ERROR", error)
         }
     }
 
