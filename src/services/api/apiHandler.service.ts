@@ -24,16 +24,16 @@ class ApiHandlerService {
         try {
             // await se usa para esperar a que una promesa se resuelva o se rechace.
             const response = await axios.get(`${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`); 
-            const gamesLibrary: T = response.data.response?.games;            
+            const gamesLibrary: T = response.data.response?.games;               
             
-            if (gamesLibrary === undefined) {
+            if (gamesLibrary === undefined) {                
                 return {data: [] as T}
             }
 
             return {data: gamesLibrary};
 
          } catch (error) {
-            logger.error("Failed to fetch games from Steam API:", error);
+            // logger.error("Failed to fetch Games Library from Steam API:", error);
             throw new ServiceError("Failed to fetch Games Library from Steam API", "FETCH_ERROR", error);
          }
     }

@@ -1,4 +1,5 @@
 
+import { ServiceError } from "../../errors/serviceError";
 import ApiHandlerService from "../../services/api/apiHandler.service";
 import GameService from "../../services/games.service";
 import { GameData } from "../../types/game";
@@ -45,8 +46,28 @@ describe('Retrieves the list of games owned by a Steam player from their library
         const apiMockResponse = { data: [] };
         apiServiceMock.getOwnedGames.mockResolvedValue(apiMockResponse); 
 
+        /**
+         * 
+         * Si pones el await aquí estás esperando que la promesa 
+         * se resuelva o se rechace en ese momento.
+
+         * 
+         * Si la promesa se rechaza, el error será lanzado inmediatamente 
+         * en esta línea, 
+         * y el test fallará antes de llegar a la parte del expect.
+         * 
+         * Esto significa que el error no llegaría al 
+         * expect(result).rejects.toThrow(), 
+         * porque el test ya habría terminado con un fallo antes de tiempo.
+         */
         const result = gameService.getGamesLibrary();
 
-        await expect(result).rejects.toThrow();
+        /**
+         * result tiene la promesa y se la pasas al expect 
+         * ahora le dices a Jest:
+	     * “Cuando esta promesa se rechace, 
+         * asegúrate de que el error sea un ServiceError.”
+         */
+        await expect(result).rejects.toThrow(ServiceError); // Aquí Jest espera que falle
     });
 });
