@@ -19,6 +19,7 @@ describe('Retrieves the list of games owned by a Steam player from their library
     it('should fetch and return the list of games owned by the player', async() =>{
 
         const apiMockResponse = { 
+            success: true,
             data: [
                 {appid: 1, name: "Game 1"},
                 {appid: 2, name: "Game 2"},
@@ -43,7 +44,10 @@ describe('Retrieves the list of games owned by a Steam player from their library
 
     it("should throw an error if the player has no games", async () => {
         
-        const apiMockResponse = { data: [] };
+        const apiMockResponse = { 
+            success: false,
+            data: [] 
+        };
         apiServiceMock.getOwnedGames.mockResolvedValue(apiMockResponse); 
 
         /**

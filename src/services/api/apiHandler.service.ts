@@ -46,7 +46,7 @@ class ApiHandlerService {
                 .get(`${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/?appid=${gameId}&key=${this.API_KEY}&steamid=${this.STEAM_ID}`); 
             
             const playerAchievementsData: T = response.data.playerstats;
-
+            
             return {data: playerAchievementsData};
 
         } catch (error) {
