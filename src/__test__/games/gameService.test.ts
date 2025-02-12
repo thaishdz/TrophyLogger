@@ -7,7 +7,7 @@ import { GameData } from "../../types/game";
 // Simulo el comportamiento de la función, pero no me enfoco en la llamada HTTP de eso se encarga otro test
 jest.mock("../../services/api/apiHandler.service");
 
-describe('Retrieves the list of games owned by a Steam player from their library', () => {
+describe('GameService --- Steam API', () => {
     let gameService: GameService;
     let apiServiceMock: jest.Mocked<ApiHandlerService>;
 

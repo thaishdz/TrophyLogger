@@ -47,7 +47,7 @@ export class GameController {
                 res.status(400).json({error: "Invalid gameId"})
             }
 
-            const playerDataAchievements: AchievementPlayerData = await this.achievementService.getPlayerLockedAchievements(gameId);            
+            const playerDataAchievements: AchievementPlayerData = await this.achievementService.getLockedAchievementsDataForPlayer(gameId);            
             
             const gameData: GameData = {
                 gameId,

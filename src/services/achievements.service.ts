@@ -13,20 +13,17 @@ import { ServiceError } from '../errors/serviceError';
 
 class AchievementsService {
 
-    private apiService: ApiHandlerService;
+    constructor(private apiService: ApiHandlerService) {}
 
-    constructor() {
-        this.apiService = new ApiHandlerService();
-    }
-
-    public async getPlayerLockedAchievements(gameId: number): Promise<AchievementPlayerData> {
+    public async getLockedAchievementsDataForPlayer(gameId: number): Promise<AchievementPlayerData> {
         try {
             const { data }: ApiResponse<GameAchievementsResponse> = await this.apiService.getPlayerAchievements(gameId);
             const { gameName, achievements } = data;
+            console.log(data);
             
             const achievementsDetails: AchievementDetails[] = await this.getAchievementsDetails(gameId);
 
-            const playerLockedAchievementsData: AchievementsLockedData[] = this.getAchievementsLockedData(achievements, achievementsDetails);            
+            const playerLockedAchievementsData: AchievementsLockedData[] = this.getLockedAchievementsData(achievements, achievementsDetails);            
             const totalAchievementsLocked: number = playerLockedAchievementsData.length;
 
             const achievementsPlayerData: AchievementPlayerData = {
@@ -34,15 +31,16 @@ class AchievementsService {
                 totalLocked: totalAchievementsLocked,
                 playerAchievementsData: playerLockedAchievementsData
             };
+            console.log(achievementsPlayerData);
 
             return achievementsPlayerData;
            
         } catch (error) {
-            throw new ServiceError("Error fetching player locked achievements data");
+            throw new ServiceError("Error fetching player locked achievements data", "FETCH_ERROR", error);
         }
     }
 
-    private getAchievementsLockedData(
+    private getLockedAchievementsData(
         achievementPlayerAchievedStats: AchievementPlayerAchievedStats[],
         achievementsDetails: AchievementDetails[]
     ): AchievementsLockedData[] {
@@ -80,7 +78,7 @@ class AchievementsService {
             }));
             
         } catch (error) {
-            throw new ServiceError("Error fetching achievements details");
+            throw new ServiceError("Error fetching achievements details", "FETCH_ERROR", error);
         }
     }
 }
