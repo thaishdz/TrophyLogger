@@ -86,7 +86,7 @@ describe('Retrieves the list of games owned by a Steam player from their library
 
     });
 
-    it("findgames", async () =>{
+    it("should return found games", async () =>{
 
         const pattern = 'zero';
         const gamesLibraryMock: GameData[] = [
@@ -117,7 +117,7 @@ describe('Retrieves the list of games owned by a Steam player from their library
         expect(result).toEqual(resultExpect);
     });
 
-    it("should return a ServiceError when return no games", async() => {
+    it("should return a ServiceError when no games are returned", async() => {
         
         const pattern = 'zero';
         const gamesLibraryMock: GameData[] = [
