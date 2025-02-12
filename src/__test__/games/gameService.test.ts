@@ -16,10 +16,9 @@ describe('Retrieves the list of games owned by a Steam player from their library
         gameService = new GameService(apiServiceMock);
     });
 
-    it('should fetch and return the list of games owned by the player', async() =>{
+    it('should return the list of games owned by the player', async() => {
 
         const apiMockResponse = { 
-            success: true,
             data: [
                 {appid: 1, name: "Game 1"},
                 {appid: 2, name: "Game 2"},
@@ -73,5 +72,70 @@ describe('Retrieves the list of games owned by a Steam player from their library
          * asegúrate de que el error sea un ServiceError.”
          */
         await expect(result).rejects.toThrow(ServiceError); // Aquí Jest espera que falle
+    });
+
+    it("should throw an fetch error if the API request fails", async () => {
+        
+        const serviceError = new ServiceError("Failed to fetch Games Library from Steam API", "FETCH_ERROR");
+        
+        apiServiceMock.getOwnedGames.mockRejectedValue(serviceError);
+
+        const result = gameService.getGamesLibrary();
+
+        await expect(result).rejects.toThrow(ServiceError);
+
+    });
+
+    it("findgames", async () =>{
+
+        const pattern = 'zero';
+        const gamesLibraryMock: GameData[] = [
+            {
+                gameId: 1,
+                name: "The Witcher 3",
+                cover: '',
+            },
+            {   
+                gameId: 2,
+                name: "Cuphead",
+                cover: ''
+            },
+            {   
+                gameId: 3,
+                name: "Horizon Zero Dawn",
+                cover: ''
+            }
+        ];
+
+        const resultExpect = [{
+            gameId: 3,
+            name: "Horizon Zero Dawn",
+            cover: ''
+        }];
+
+        const result = gameService.findGames(pattern, gamesLibraryMock);
+        expect(result).toEqual(resultExpect);
+    });
+
+    it("should return a ServiceError when return no games", async() => {
+        
+        const pattern = 'zero';
+        const gamesLibraryMock: GameData[] = [
+            {
+                gameId: 1,
+                name: "The Witcher 3",
+                cover: '',
+            },
+            {   
+                gameId: 2,
+                name: "Cuphead",
+                cover: ''
+            }
+        ];
+
+        const emptyResult: [] = []; // lol
+
+        const result = gameService.findGames(pattern, gamesLibraryMock);
+        expect(result).toEqual(emptyResult);
     });
 });
