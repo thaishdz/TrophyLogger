@@ -1,10 +1,18 @@
 
 # 🏆 TrophyLog (v0)
 
-## Setting up API
+## Setting Up the API
 
-### Step 1: Running Services with Podman in Detached Mode
+### Step 1: Running Services with Docker Compose
+
+To start the services, run the following command:
+```sh
+docker compose up 
+```
+This will build the images automatically if they are not already available on your machine.
+
+If you prefer to run the containers in the background, use detached mode by adding the -d flag:
 
 ```sh
-podman compose up -d
+docker compose up -d
 ```
