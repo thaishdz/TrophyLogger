@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import GameService from '../services/games.service';
-import AchievementsService from '../services/achievements.service';
+import GameService from '../services/games/games.service';
+import AchievementsService from '../services/achievements/achievements.service';
 import ApiHandlerService from '../services/api/apiHandler.service';
 
 import { GameData, GameAchievementsReponse } from '../types/game';
@@ -47,8 +47,7 @@ export class GameController {
                 res.status(400).json({error: "Invalid gameId"})
             }
 
-            const playerDataAchievements: AchievementPlayerData = await this.achievementService.getLockedAchievementsDataForPlayer(gameId);            
-            
+            const playerDataAchievements: AchievementPlayerData = await this.achievementService.getLockedAchievementsDataForPlayer(gameId);                        
             const gameData: GameData = {
                 gameId,
                 name: playerDataAchievements.gameName,

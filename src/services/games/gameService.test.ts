@@ -1,7 +1,7 @@
 
 import { ServiceError } from "../../errors/serviceError";
-import ApiHandlerService from "../../services/api/apiHandler.service";
-import GameService from "../../services/games.service";
+import ApiHandlerService from "../api/apiHandler.service";
+import GameService from "./games.service";
 import { GameData } from "../../types/game";
 
 // Simulo el comportamiento de la función, pero no me enfoco en la llamada HTTP de eso se encarga otro test

@@ -1,5 +1,5 @@
-import ApiHandlerService from './api/apiHandler.service';
-import { ApiResponse } from '../types/apiResponse';
+import ApiHandlerService from '../api/apiHandler.service';
+import { ApiResponse } from '../../types/apiResponse';
 
 import { AchievementDetails, 
     GameAchievementsResponse, 
@@ -7,9 +7,9 @@ import { AchievementDetails,
     AchievementPlayerAchievedStats,
     AchievementPlayerData,
     AchievementsLockedData
-} from '../types/achievement';
+} from '../../types/achievement';
 
-import { ServiceError } from '../errors/serviceError';
+import { ServiceError } from '../../errors/serviceError';
 
 class AchievementsService {
 
@@ -19,7 +19,6 @@ class AchievementsService {
         try {
             const { data }: ApiResponse<GameAchievementsResponse> = await this.apiService.getPlayerAchievements(gameId);
             const { gameName, achievements } = data;
-            console.log(data);
             
             const achievementsDetails: AchievementDetails[] = await this.getAchievementsDetails(gameId);
 
@@ -31,7 +30,6 @@ class AchievementsService {
                 totalLocked: totalAchievementsLocked,
                 playerAchievementsData: playerLockedAchievementsData
             };
-            console.log(achievementsPlayerData);
 
             return achievementsPlayerData;
            
@@ -69,14 +67,14 @@ class AchievementsService {
 
         try {
             const { data }: ApiResponse<AchievementDetailsResponse[]> = await this.apiService.getAchievementsDetails(gameId);
-
+            
             return data.map((achievement: AchievementDetailsResponse): AchievementDetails => ({
                 name: achievement.displayName,
                 value: achievement.name,
                 description: achievement.description,
                 icon: achievement.icongray
             }));
-            
+
         } catch (error) {
             throw new ServiceError("Error fetching achievements details", "FETCH_ERROR", error);
         }
