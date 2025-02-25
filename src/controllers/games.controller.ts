@@ -27,13 +27,13 @@ export class GameController {
             const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary();
             const matchedGames = await this.gameService.findGames(gameName, gamesLibrary);
             
-            res.json({matchedGames})
+            res.status(200).json({matchedGames})
             
         } catch (error) {
             if (error instanceof ServiceError) {
-                res.status(500).json({error: error.message});
+                res.status(500).json({ error: error.message });
             } else if (error instanceof RepositoryError) {
-                res.status(500).json({error: error.message})
+                res.status(500).json({ error: error.message })
             }
         }
     }
@@ -58,13 +58,13 @@ export class GameController {
                 achievements: playerDataAchievements
             };
 
-            res.json(gameAchievementsResponse);
+            res.status(200).json(gameAchievementsResponse);
 
         } catch (error) {
             if (error instanceof ServiceError) {
-                res.status(500).json({error: error.message});
+                res.status(500).json({ error: error.message });
             } else if (error instanceof RepositoryError) {
-                res.status(500).json({error: error.message})
+                res.status(500).json({ error: error.message })
             }
         }
     }

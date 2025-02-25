@@ -24,7 +24,8 @@ describe("AchievementsService --- Steam API", () => {
     it("should combine unachieved stats and achievement details into locked achievements data", async () => {
 
         apiServiceMock.getPlayerAchievements.mockResolvedValue(gameAchieveResponseMock);
-        const spyAchievementsDetails = jest.spyOn(achievementsService,'getAchievementsDetails').mockResolvedValue(mockAchievementsDetails);
+        const spyAchievementsDetails = jest.spyOn(achievementsService,'getAchievementsDetails')
+                                            .mockResolvedValue(mockAchievementsDetails);
         
         const expectResult = {
             "gameName": "Horizon Zero Dawn", 

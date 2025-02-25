@@ -4,7 +4,7 @@ import { validateAuthParams } from '../middlewares/auth.middleware';
 import { GameController } from '../controllers/games.controller'
 import ApiHandlerService from '../services/api/apiHandler.service';
 import GameService from '../services/games/games.service';
-import AchievementsService from '../services/achievements.service';
+import AchievementsService from '../services/achievements/achievements.service';
 
 const router = Router();
 
