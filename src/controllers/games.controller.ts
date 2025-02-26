@@ -18,7 +18,7 @@ export class GameController {
         private apiService: ApiHandlerService
     ) {}
 
-
+    //TODO: TESTING PENDING
     public searchGame = async (req: Request, res: Response): Promise<void> => {
         
         try {            
@@ -27,7 +27,11 @@ export class GameController {
             const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary();
             const matchedGames = await this.gameService.findGames(gameName, gamesLibrary);
             
-            res.status(200).json({matchedGames})
+            if (matchedGames.length === 0) {
+                res.status(200).json({ matchedGames: [] });
+            }
+
+            res.status(200).json({ matchedGames })
             
         } catch (error) {
             if (error instanceof ServiceError) {
