@@ -1,6 +1,6 @@
-
-const request = require('supertest'); // simulará el server
+import request from 'supertest'; // simulará el server
 import { createApp } from '../app';
+
 
 /**
  * En teoría esto es un E2E (test de integración), estoy probando que se llame
