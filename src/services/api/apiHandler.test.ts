@@ -1,7 +1,7 @@
-import ApiHandlerService from "../../services/api/apiHandler.service";
+import ApiHandlerService from "./apiHandler.service";
 import axios from 'axios';
 import config from '../../config';
-import { ServiceError } from "../../errors/serviceError";
+import { ServiceError } from "../../shared/errors/serviceError";
 
 jest.mock("axios"); 
 

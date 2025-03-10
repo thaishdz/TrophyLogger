@@ -1,8 +1,8 @@
 
-import { ServiceError } from "../../errors/serviceError";
+import { ServiceError } from "../../shared/errors/serviceError";
 import ApiHandlerService from "../api/apiHandler.service";
 import GameService from "./games.service";
-import { GameData } from "../../types/game";
+import { GameData } from "../../shared/types/game";
 
 // Simulo el comportamiento de la función, pero no me enfoco en la llamada HTTP de eso se encarga otro test
 jest.mock("../../services/api/apiHandler.service");

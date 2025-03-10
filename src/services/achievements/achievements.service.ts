@@ -1,5 +1,5 @@
 import ApiHandlerService from '../api/apiHandler.service';
-import { ApiResponse } from '../../types/apiResponse';
+import { ApiResponse } from '../../shared/types/apiResponse';
 
 import { AchievementDetails, 
     GameAchievementsResponse, 
@@ -7,9 +7,9 @@ import { AchievementDetails,
     AchievementPlayerAchievedStats,
     AchievementPlayerData,
     AchievementsLockedData
-} from '../../types/achievement';
+} from '../../shared/types/achievement';
 
-import { ServiceError } from '../../errors/serviceError';
+import { ServiceError } from '../../shared/errors/serviceError';
 
 class AchievementsService {
 

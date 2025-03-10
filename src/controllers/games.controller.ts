@@ -4,11 +4,11 @@ import GameService from '../services/games/games.service';
 import AchievementsService from '../services/achievements/achievements.service';
 import ApiHandlerService from '../services/api/apiHandler.service';
 
-import { GameData, GameAchievementsReponse } from '../types/game';
+import { GameData, GameAchievementsReponse } from '../shared/types/game';
 
-import { ServiceError } from '../errors/serviceError';
-import { RepositoryError } from '../errors/repositoryError';
-import { AchievementPlayerData } from '../types/achievement';
+import { ExternalApiError } from '../shared/errors/externalApiError';
+import { AchievementPlayerData } from '../shared/types/achievement';
+import { ApiError } from '../shared/errors/apiError';
 
 export class GameController {
 
@@ -34,9 +34,10 @@ export class GameController {
             res.status(200).json({ matchedGames })
             
         } catch (error) {
-            if (error instanceof ServiceError) {
+            //TODO: Implementar middleware
+            if (error instanceof ApiError) {
                 res.status(500).json({ error: error.message });
-            } else if (error instanceof RepositoryError) {
+            } else if (error instanceof ExternalApiError) {
                 res.status(500).json({ error: error.message })
             }
         }
@@ -65,9 +66,9 @@ export class GameController {
             res.status(200).json(gameAchievementsResponse);
 
         } catch (error) {
-            if (error instanceof ServiceError) {
+            if (error instanceof ApiError) {
                 res.status(500).json({ error: error.message });
-            } else if (error instanceof RepositoryError) {
+            } else if (error instanceof ExternalApiError) {
                 res.status(500).json({ error: error.message })
             }
         }

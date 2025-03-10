@@ -6,7 +6,7 @@ import {
     achievementDetailsResponseMock,
     mockAchievementsDetails
  } from "./__fixtures__/dataMock";
-import { ServiceError } from "../../errors/serviceError";
+import { ServiceError } from "../../shared/errors/serviceError";
 
 jest.mock("../../services/api/apiHandler.service");
 

@@ -1,11 +1,11 @@
 import Fuse, { FuseResult } from 'fuse.js'; // mi santo grial para realizar las búsquedas
 import logger from '../../config/logger'
 import ApiHandlerService from '../api/apiHandler.service';
-import { GameData } from '../../types/game';
-import { ServiceError } from '../../errors/serviceError';
+import { GameData } from '../../shared/types/game';
+import { ServiceError } from '../../shared/errors/serviceError';
 
-import { ApiResponse } from '../../types/apiResponse';
-import { GameLibraryResponse } from '../../types/game';
+import { ApiResponse } from '../../shared/types/apiResponse';
+import { GameLibraryResponse } from '../../shared/types/game';
 
 class GameService {
 

@@ -3,8 +3,8 @@ import axios from 'axios';
 import config from '../../config';
 import logger from '../../config/logger'
 
-import { ApiResponse } from '../../types/apiResponse';
-import { ServiceError } from '../../errors/serviceError';
+import { ApiResponse } from '../../shared/types/apiResponse';
+import { ServiceError } from '../../shared/errors/serviceError';
 
 class ApiHandlerService {
     private API_URL: string;

@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 import cors from "cors";
 import morgan from "morgan";
 
-import config from "./config";
-import logger from "./config/logger";
-import routes from "./routes"; // Importa el archivo index.ts
+import config from ".";
+import logger from "./logger";
+import routes from "../routes"; // Importa el archivo index.ts
 
 // Configura y prepara la aplicación Express con todos sus middlewares y rutas
 export const createApp = () => {
