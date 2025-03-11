@@ -6,6 +6,7 @@ import morgan from "morgan";
 import config from ".";
 import logger from "./logger";
 import routes from "../routes"; // Importa el archivo index.ts
+import { errorHandler } from "../middlewares/errorHandler";
 
 // Configura y prepara la aplicación Express con todos sus middlewares y rutas
 export const createApp = () => {
@@ -18,9 +19,10 @@ export const createApp = () => {
 
   // Configura middlewares
   app.use(cors()); // Permite TODAS las conexiones exteriores
-  app.use(express.json()); // Analiza el body de solicitud JSON automáticamente
+  app.use(express.json()); // Middlware de entrada de datos,analiza el body para ver si es un JSON y lo parsea para el controller
   app.use(morgan("combined", { stream })); // Registra detalles de cada solicitud HTTP usando Winston
   app.use("/api/v1", routes); // Todas las rutas comenzarán con "/api/v1"
+  app.use(errorHandler); // Middleware de errores que actua en todas las rutas (siempre debe ir al final)
 
   return app; // Devuelve la aplicación configurada
 };

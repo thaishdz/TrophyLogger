@@ -1,10 +1,10 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-import { validateAuthParams } from '../middlewares/auth.middleware';
-import { GameController } from '../controllers/games.controller'
-import ApiHandlerService from '../services/api/apiHandler.service';
-import GameService from '../services/games/games.service';
-import AchievementsService from '../services/achievements/achievements.service';
+import { validateAuthParams } from "../middlewares/auth.middleware";
+import { GameController } from "../controllers/games.controller";
+import ApiHandlerService from "../services/api/ApiHandlerService";
+import GameService from "../services/games/GameService";
+import AchievementsService from "../services/achievements/AchievementsService";
 
 const router = Router();
 
@@ -12,13 +12,23 @@ const router = Router();
 const apiService = new ApiHandlerService();
 const gameService = new GameService(apiService);
 const achievementsService = new AchievementsService(apiService);
-const gamesController = new GameController(gameService, achievementsService, apiService);
+const gamesController = new GameController(
+  gameService,
+  achievementsService,
+  apiService,
+);
 
 // Se ejecutan en este orden: middleware1 -> middleware2 -> controladorFinal
 /*router.get(`/dashboard`, getAchivementStats); */
-router.get(`/search`, validateAuthParams, gamesController.searchGame.bind(gamesController));
-router.get(`/gameAchievements/:gameId`, validateAuthParams, gamesController.gameAchievements.bind(gamesController)); 
-
-
+router.get(
+  `/search`,
+  validateAuthParams,
+  gamesController.searchGame.bind(gamesController),
+);
+router.get(
+  `/gameAchievements/:gameId`,
+  validateAuthParams,
+  gamesController.gameAchievements.bind(gamesController),
+);
 
 export default router;
