@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { validateAuthParams } from "../middlewares/auth.middleware";
-import { GameController } from "../controllers/games.controller";
+import { GameController } from "../controllers/GameController";
 import ApiHandlerService from "../services/api/ApiHandlerService";
 import GameService from "../services/games/GameService";
 import AchievementsService from "../services/achievements/AchievementsService";
