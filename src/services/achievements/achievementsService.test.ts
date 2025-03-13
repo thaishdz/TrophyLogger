@@ -1,3 +1,4 @@
+import { ApiError } from "../../shared/errors/ApiError";
 import ApiHandlerService from "../api/ApiHandlerService";
 import AchievementsService from "./AchievementsService";
 
@@ -6,9 +7,8 @@ import {
   achievementDetailsResponseMock,
   mockAchievementsDetails,
 } from "./__fixtures__/dataMock";
-import { ServiceError } from "../../shared/errors/serviceError";
 
-jest.mock("../../services/api/apiHandler.service");
+jest.mock("../../services/api/ApiHandlerService");
 
 describe("AchievementsService --- Steam API", () => {
   let apiServiceMock: jest.Mocked<ApiHandlerService>;
@@ -68,16 +68,13 @@ describe("AchievementsService --- Steam API", () => {
   });
 
   it("should return an error if there are no achievement details", async () => {
-    const serviceError = new ServiceError(
-      "Error fetching achievements details",
-      "FETCH_ERROR",
-    );
+    const apiError = new ApiError("Error fetching achievements details", 500);
 
-    apiServiceMock.getAchievementsDetails.mockRejectedValue(serviceError);
+    apiServiceMock.getAchievementsDetails.mockRejectedValue(apiError);
 
     const result = achievementsService.getAchievementsDetails(6);
 
-    await expect(result).rejects.toThrow(ServiceError);
+    await expect(result).rejects.toThrow(ApiError);
 
     expect(apiServiceMock.getAchievementsDetails).toHaveBeenCalledTimes(1);
   });

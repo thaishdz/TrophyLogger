@@ -4,7 +4,7 @@ import config from "../../config";
 import logger from "../../config/logger";
 
 import { ApiResponse } from "../../shared/types/apiResponse";
-import { ExternalApiError } from "../../shared/errors/externalApiError";
+import { ExternalApiError } from "../../shared/errors/ExternalApiError";
 
 class ApiHandlerService {
   private API_URL: string;

@@ -23,10 +23,6 @@ class GameService {
       throw new ApiError("Invalid response: expected an array", 400);
     }
 
-    if (data.length === 0) {
-      throw new ApiError("The player has no games in their library", 404);
-    }
-
     //REFACTOR: Usar Promise.allSettled para manejar errores de forma que no se detenga la ejecución de las promesas
     const gamesInfo: GameData[] = await Promise.all(
       data.map(async (game: GameLibraryResponse) => ({

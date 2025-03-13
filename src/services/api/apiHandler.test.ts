@@ -1,7 +1,8 @@
 import ApiHandlerService from "./ApiHandlerService";
 import axios from "axios";
 import config from "../../config";
-import { ServiceError } from "../../shared/errors/serviceError";
+
+import { ExternalApiError } from "../../shared/errors/ExternalApiError";
 
 jest.mock("axios");
 
@@ -66,21 +67,19 @@ describe("Make requests to the Steam API", () => {
   });
 
   it("should throw an fetch error if the API request fails", async () => {
-    const serviceError = new ServiceError(
+    const externalApiError = new ExternalApiError(
       "Failed to fetch Games Library from Steam API",
-      "FETCH_ERROR",
+      500,
     );
-
-    // INFO: Simula un error de red o caída del servidor genérica
     /**
      * 	“Cuando se llame a axios.get, en vez de resolver la promesa,
      *  recházala y lanza este error.”
      */
-    mockedAxios.get.mockRejectedValue(serviceError);
+    mockedAxios.get.mockRejectedValue(externalApiError);
 
     const result = apiHandlerService.getOwnedGames();
 
-    await expect(result).rejects.toThrow(ServiceError);
+    await expect(result).rejects.toThrow(ExternalApiError);
 
     // Verifica que la API fue llamada
     expect(mockedAxios.get).toHaveBeenCalledTimes(1);
@@ -152,16 +151,16 @@ describe("Make requests to the Steam API", () => {
   });
 
   it("should throw an fetch error if the Achievements request fails", async () => {
-    const serviceError = new ServiceError(
-      "Failed to fetch Achievements from Steam API",
-      "FETCH_ERROR",
+    const externalApiError = new ExternalApiError(
+      "Failed fetching achievements from Steam API",
+      500,
     );
 
-    mockedAxios.get.mockRejectedValue(serviceError);
+    mockedAxios.get.mockRejectedValue(externalApiError);
 
     const result = apiHandlerService.getPlayerAchievements(1);
 
-    await expect(result).rejects.toThrow(ServiceError);
+    await expect(result).rejects.toThrow(ExternalApiError);
 
     expect(mockedAxios.get).toHaveBeenCalledTimes(1);
   });
