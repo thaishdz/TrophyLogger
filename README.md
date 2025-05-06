@@ -1,5 +1,7 @@
 
-# 🏆 TrophyLog (v0)
+# 🏆 TrophyLogger (v0)
+
+Track your game achievements and trophies in one place — simple, fast, and gamer-friendly.
 
 ## Setting Up the API
 
