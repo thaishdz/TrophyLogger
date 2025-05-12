@@ -1,5 +1,5 @@
 import request from 'supertest'; // simulará el server
-import { createApp } from '../config/app';
+import { createApp } from '../app';
 
 
 /**

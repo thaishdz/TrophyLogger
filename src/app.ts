@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 import cors from "cors";
 import morgan from "morgan";
 
-import config from ".";
-import logger from "./logger";
-import routes from "../routes"; // Importa el archivo index.ts
-import { errorHandler } from "../middlewares/errorHandler";
+import config from "./config";
+import logger from "./config/logger";
+import routes from "./routes"; // Importa el archivo index.ts
+import { errorHandler } from "./middlewares/errorHandler";
 
 // Configura y prepara la aplicación Express con todos sus middlewares y rutas
 export const createApp = () => {
@@ -21,8 +21,9 @@ export const createApp = () => {
   app.use(cors()); // Permite TODAS las conexiones exteriores
   app.use(express.json()); // Middlware de entrada de datos,analiza el body para ver si es un JSON y lo parsea para el controller
   app.use(morgan("combined", { stream })); // Registra detalles de cada solicitud HTTP usando Winston
-  app.use("/api/v1", routes); // Todas las rutas comenzarán con "/api/v1"
   app.use(errorHandler); // Middleware de errores que actua en todas las rutas (siempre debe ir al final)
+
+  app.use("/api/v1", routes); // Todas las rutas comenzarán con "/api/v1"
 
   return app; // Devuelve la aplicación configurada
 };
@@ -37,14 +38,14 @@ export const init = async () => {
     await mongoose.connect(DATABASE_URL);
     logger.info("Conectado al Mongui ✅");
 
-    // Inicia el servidor HTTP para escuchar solicitudes
-    app.listen(PORT, () => {
-      logger.info(`Poniendo la 👂 en el ${PORT}`);
-    });
   } catch (error) {
     logger.error("Fracaso al conectar a Mongui", error);
     process.exit(1); // Evita que el server siga intentando conectarse si hay un error crítico
   }
+
+  app.listen(PORT, () => {
+    logger.info(`Poniendo la 👂 en el ${PORT}`);
+  });
 
   return app; // En caso de necesitar la referencia a la app en algún momento
 };

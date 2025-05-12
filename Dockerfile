@@ -9,9 +9,6 @@ COPY package*.json ./
 # Instalar las dependencias
 RUN npm install
 
-# Instalar Typescript globalmente why not
-RUN npm i -g typescript
-
 # Copia el fantástico pero modesto código fuente
 COPY . .
 
