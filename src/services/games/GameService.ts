@@ -4,7 +4,8 @@ import { GameData } from "../../shared/types/game";
 
 import { ApiResponse } from "../../shared/types/apiResponse";
 import { GameLibraryResponse } from "../../shared/types/game";
-import { ApiError } from "../../shared/errors/ApiError";
+import { SteamApiError } from "../../exceptions/SteamApiError";
+import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
 
 class GameService {
   /*
@@ -20,7 +21,7 @@ class GameService {
       await this.apiService.getOwnedGames();
 
     if (!Array.isArray(data)) {
-      throw new ApiError("Invalid response: expected an array", 400);
+      throw new SteamApiError(HTTP_RESPONSE_STATUS.BAD_REQUEST, "Invalid response: expected an array");
     }
 
     //REFACTOR: Usar Promise.allSettled para manejar errores de forma que no se detenga la ejecución de las promesas

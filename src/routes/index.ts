@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { validateAuthParams } from "../middlewares/auth.middleware";
+import { validateAuthParams } from "../middlewares/auth";
 import { GameController } from "../controllers/GameController";
 import ApiHandlerService from "../services/api/ApiHandlerService";
 import GameService from "../services/games/GameService";

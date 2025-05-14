@@ -4,7 +4,7 @@ import morgan from "morgan";
 
 import logger from "./config/logger";
 import routes from "./routes";
-import errorMiddleware from "./middlewares/error.middleware";
+import errorMiddleware from "./middlewares/error";
 
 const app = express();
   

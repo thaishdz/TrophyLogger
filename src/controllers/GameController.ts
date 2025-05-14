@@ -6,6 +6,8 @@ import ApiHandlerService from "../services/api/ApiHandlerService";
 
 import { GameData, GameAchievementsReponse } from "../shared/types/game";
 import { AchievementPlayerData } from "../shared/types/achievement";
+import { createApiResponse } from "../common/http/responses";
+import { HTTP_RESPONSE_STATUS } from "../common/http/constants";
 
 export class GameController {
   constructor(
@@ -14,23 +16,19 @@ export class GameController {
     private apiService: ApiHandlerService,
   ) {}
 
-  //TODO: TESTING PENDING
   public searchGame = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const gameName: string = String(req.query.game);
+      const gameName = String(req.query.game);
       // TODO: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en BBDD
       const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary();
       const matchedGames = this.gameService.findGames(gameName, gamesLibrary);
 
-      if (matchedGames.length === 0) {
-        res.status(200).json({ matchedGames: [] });
-      }
-
-      res.status(200).json({ matchedGames });
+      res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', matchedGames));
+      
     } catch (error) {
       next(error);
     }
@@ -66,7 +64,7 @@ export class GameController {
         achievements: playerDataAchievements,
       };
 
-      res.status(200).json(gameAchievementsResponse);
+      res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', gameAchievementsResponse));
     } catch (error) {
       next(error);
     }
