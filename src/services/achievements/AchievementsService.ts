@@ -1,5 +1,7 @@
-import ApiHandlerService from "../api/ApiHandlerService";
+import SteamService from "../steam/SteamService";
 import { ApiResponse } from "../../shared/types/apiResponse";
+import { SteamApiError } from "../../exceptions/SteamApiError";
+import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
 
 import {
   AchievementDetails,
@@ -10,17 +12,15 @@ import {
   AchievementsLockedData,
 } from "../../shared/types/achievement";
 
-import { ApiError } from "../../shared/errors/ApiError";
-
 class AchievementsService {
-  constructor(private apiService: ApiHandlerService) {}
+  constructor(private steamService: SteamService) {}
 
   public async getLockedAchievementsDataForPlayer(
     gameId: number,
   ): Promise<AchievementPlayerData> {
     try {
       const { data }: ApiResponse<GameAchievementsResponse> =
-        await this.apiService.getPlayerAchievements(gameId);
+        await this.steamService.getPlayerAchievements(gameId);
       const { gameName, achievements } = data;
 
       const achievementsDetails: AchievementDetails[] =
@@ -39,7 +39,7 @@ class AchievementsService {
 
       return achievementsPlayerData;
     } catch (error) {
-      throw new ApiError("Error fetching player locked achievements data", 500);
+      throw new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Error fetching player locked achievements data");
     }
   }
 
@@ -84,7 +84,7 @@ class AchievementsService {
   ): Promise<AchievementDetails[]> {
     try {
       const { data }: ApiResponse<AchievementDetailsResponse[]> =
-        await this.apiService.getAchievementsDetails(gameId);
+        await this.steamService.getAchievementsDetails(gameId);
 
       return data.map(
         (achievement: AchievementDetailsResponse): AchievementDetails => ({
@@ -95,7 +95,7 @@ class AchievementsService {
         }),
       );
     } catch (error) {
-      throw new ApiError("Error fetching achievements details", 500);
+      throw new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Error fetching achievements details");
     }
   }
 }

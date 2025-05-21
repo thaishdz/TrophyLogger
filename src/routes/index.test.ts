@@ -1,6 +1,5 @@
 import request from 'supertest'; // simulará el server
-import { createApp } from '../app';
-
+import app from '../app'
 
 /**
  * En teoría esto es un E2E (test de integración), estoy probando que se llame
@@ -8,8 +7,6 @@ import { createApp } from '../app';
  */
 
 describe('API Endpoints', () => {
-
-    const app = createApp();
 
     it('should return 200  [/search?game=]', (done) => {
 

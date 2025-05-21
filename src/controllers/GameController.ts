@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 import GameService from "../services/games/GameService";
 import AchievementsService from "../services/achievements/AchievementsService";
-import ApiHandlerService from "../services/api/ApiHandlerService";
+import SteamService from "../services/steam/SteamService";
 
 import { GameData, GameAchievementsReponse } from "../shared/types/game";
 import { AchievementPlayerData } from "../shared/types/achievement";
@@ -13,7 +13,7 @@ export class GameController {
   constructor(
     private gameService: GameService,
     private achievementService: AchievementsService,
-    private apiService: ApiHandlerService,
+    private steamService: SteamService,
   ) {}
 
   public searchGame = async (
@@ -54,7 +54,7 @@ export class GameController {
       const gameData: GameData = {
         gameId,
         name: playerDataAchievements.gameName,
-        cover: await this.apiService.getCoverGame(
+        cover: await this.steamService.getCoverGame(
           playerDataAchievements.gameName,
           gameId,
         ),

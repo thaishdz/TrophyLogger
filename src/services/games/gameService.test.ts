@@ -1,16 +1,16 @@
-import ApiHandlerService from "../api/ApiHandlerService";
+import SteamService from "../steam/SteamService";
 import GameService from "./GameService";
 import { GameData } from "../../shared/types/game";
 
 // Simulo el comportamiento de la función, pero no me enfoco en la llamada HTTP de eso se encarga otro test
-jest.mock("../../services/api/ApiHandlerService");
+jest.mock("../../services/steam/SteamService");
 
 describe("GameService --- Steam API", () => {
   let gameService: GameService;
-  let apiServiceMock: jest.Mocked<ApiHandlerService>;
+  let apiServiceMock: jest.Mocked<SteamService>;
 
   beforeEach(() => {
-    apiServiceMock = new ApiHandlerService() as jest.Mocked<ApiHandlerService>;
+    apiServiceMock = new SteamService() as jest.Mocked<SteamService>;
     gameService = new GameService(apiServiceMock);
   });
 

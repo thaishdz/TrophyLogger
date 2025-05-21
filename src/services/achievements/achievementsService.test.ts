@@ -1,5 +1,6 @@
-import { ApiError } from "../../shared/errors/ApiError";
-import ApiHandlerService from "../api/ApiHandlerService";
+import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
+import { SteamApiError } from "../../exceptions/SteamApiError";
+import SteamService from "../steam/SteamService";
 import AchievementsService from "./AchievementsService";
 
 import {
@@ -8,21 +9,21 @@ import {
   mockAchievementsDetails,
 } from "./__fixtures__/dataMock";
 
-jest.mock("../../services/api/ApiHandlerService");
+jest.mock("../../services/steam/SteamService");
 
 describe("AchievementsService --- Steam API", () => {
-  let apiServiceMock: jest.Mocked<ApiHandlerService>;
+  let steamServiceMock: jest.Mocked<SteamService>;
   let achievementsService: AchievementsService;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    apiServiceMock = new ApiHandlerService() as jest.Mocked<ApiHandlerService>;
-    achievementsService = new AchievementsService(apiServiceMock);
+    steamServiceMock = new SteamService() as jest.Mocked<SteamService>;
+    achievementsService = new AchievementsService(steamServiceMock);
   });
 
   //TODO: Mejorar este test para que dé la info de los achievements
   it("should combine unachieved stats and achievement details into locked achievements data", async () => {
-    apiServiceMock.getPlayerAchievements.mockResolvedValue(
+    steamServiceMock.getPlayerAchievements.mockResolvedValue(
       gameAchieveResponseMock,
     );
     const spyAchievementsDetails = jest
@@ -44,7 +45,7 @@ describe("AchievementsService --- Steam API", () => {
 
   it("should return the details of each achievement", async () => {
     const gameId = 1;
-    apiServiceMock.getAchievementsDetails.mockResolvedValue(
+    steamServiceMock.getAchievementsDetails.mockResolvedValue(
       achievementDetailsResponseMock,
     );
 
@@ -68,14 +69,14 @@ describe("AchievementsService --- Steam API", () => {
   });
 
   it("should return an error if there are no achievement details", async () => {
-    const apiError = new ApiError("Error fetching achievements details", 500);
+    const apiError = new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Error fetching achievements details");
 
-    apiServiceMock.getAchievementsDetails.mockRejectedValue(apiError);
+    steamServiceMock.getAchievementsDetails.mockRejectedValue(apiError);
 
     const result = achievementsService.getAchievementsDetails(6);
 
-    await expect(result).rejects.toThrow(ApiError);
+    await expect(result).rejects.toThrow(SteamApiError);
 
-    expect(apiServiceMock.getAchievementsDetails).toHaveBeenCalledTimes(1);
+    expect(steamServiceMock.getAchievementsDetails).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,5 +1,5 @@
 import Fuse, { FuseResult } from "fuse.js"; // mi santo grial para realizar las búsquedas
-import ApiHandlerService from "../api/ApiHandlerService";
+import SteamService from "../steam/SteamService";
 import { GameData } from "../../shared/types/game";
 
 import { ApiResponse } from "../../shared/types/apiResponse";
@@ -14,11 +14,11 @@ class GameService {
    ** también facilita mockear en los tests
    */
 
-  constructor(private apiService: ApiHandlerService) {}
+  constructor(private steamService: SteamService) {}
 
   async getGamesLibrary(): Promise<GameData[]> {
     const { data }: ApiResponse<GameLibraryResponse[]> =
-      await this.apiService.getOwnedGames();
+      await this.steamService.getOwnedGames();
 
     if (!Array.isArray(data)) {
       throw new SteamApiError(HTTP_RESPONSE_STATUS.BAD_REQUEST, "Invalid response: expected an array");

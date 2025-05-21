@@ -4,9 +4,10 @@ import config from "../../config";
 import logger from "../../config/logger";
 
 import { ApiResponse } from "../../shared/types/apiResponse";
-import { ExternalApiError } from "../../shared/errors/ExternalApiError";
+import { SteamApiError } from "../../exceptions/SteamApiError";
+import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
 
-class ApiHandlerService {
+class SteamService {
   private API_URL: string;
   private API_URL_STORE: string;
   private API_KEY: string;
@@ -20,7 +21,8 @@ class ApiHandlerService {
   }
 
   async getOwnedGames<T>(): Promise<ApiResponse<T>> {
-    const url = `${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}&steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`;
+    const url = `${this.API_URL}/IPlayerService/GetOwnedGames/v1/?key=${this.API_KEY}
+      &steamid=${this.STEAM_ID}&include_appinfo=true&include_played_free_games=true`;
     try {
       const response = await axios.get(url); // await se usa para esperar a que una promesa se resuelva o se rechace.
       const gamesLibrary: T = response.data.response?.games;
@@ -30,8 +32,8 @@ class ApiHandlerService {
       }
       return { data: gamesLibrary };
     } catch (error) {
-      logger.error("Failed to fetch Games from Steam API:", error);
-      throw new ExternalApiError("Failed fetching games from Steam API", 500);
+        logger.error("Failed to fetch Games from Steam API:", error);
+        throw new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Failed fetching games from Steam API");
     }
   }
 
@@ -42,11 +44,8 @@ class ApiHandlerService {
       const playerAchievementsData: T = response.data.playerstats;
       return { data: playerAchievementsData };
     } catch (error) {
-      logger.error("Failed to fetch Achievements from Steam API:", error);
-      throw new ExternalApiError(
-        "Failed fetching achievements from Steam API",
-        500,
-      );
+        logger.error("Failed to fetch Achievements from Steam API:", error);
+        throw new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Failed fetching achievements from Steam API");
     }
   }
 
@@ -60,11 +59,8 @@ class ApiHandlerService {
 
       return { data: achievementsDetails };
     } catch (error) {
-      logger.error("Failed to fetch SchemaForGame from Steam API:", error);
-      throw new ExternalApiError(
-        "Failed fetching SchemaForGame from Steam API",
-        500,
-      );
+        logger.error("Failed to fetch SchemaForGame from Steam API:", error);
+        throw new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Failed fetching SchemaForGame from Steam API");
     }
   }
 
@@ -80,12 +76,9 @@ class ApiHandlerService {
       return game?.tiny_image || ""; // la cover, retorna '' si game es undefined
     } catch (error) {
       logger.error("Failed to fetch Cover game from Steam API:", error);
-      throw new ExternalApiError(
-        "Failed fetching Cover game from Steam API",
-        500,
-      );
+      throw new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Failed fetching Cover game from Steam API");
     }
   }
 }
 
-export default ApiHandlerService;
+export default SteamService;

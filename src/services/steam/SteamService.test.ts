@@ -1,8 +1,9 @@
-import ApiHandlerService from "./ApiHandlerService";
+import ApiHandlerService from "./SteamService";
 import axios from "axios";
 import config from "../../config";
+import { SteamApiError } from "../../exceptions/SteamApiError";
+import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
 
-import { ExternalApiError } from "../../shared/errors/ExternalApiError";
 
 jest.mock("axios");
 
@@ -67,19 +68,16 @@ describe("Make requests to the Steam API", () => {
   });
 
   it("should throw an fetch error if the API request fails", async () => {
-    const externalApiError = new ExternalApiError(
-      "Failed to fetch Games Library from Steam API",
-      500,
-    );
+    const apiError = new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Failed to fetch Games Library from Steam API");
     /**
      * 	“Cuando se llame a axios.get, en vez de resolver la promesa,
      *  recházala y lanza este error.”
      */
-    mockedAxios.get.mockRejectedValue(externalApiError);
+    mockedAxios.get.mockRejectedValue(apiError);
 
     const result = apiHandlerService.getOwnedGames();
 
-    await expect(result).rejects.toThrow(ExternalApiError);
+    await expect(result).rejects.toThrow(apiError);
 
     // Verifica que la API fue llamada
     expect(mockedAxios.get).toHaveBeenCalledTimes(1);
@@ -151,16 +149,13 @@ describe("Make requests to the Steam API", () => {
   });
 
   it("should throw an fetch error if the Achievements request fails", async () => {
-    const externalApiError = new ExternalApiError(
-      "Failed fetching achievements from Steam API",
-      500,
-    );
+    const apiError = new SteamApiError(HTTP_RESPONSE_STATUS.SERVER_ERROR, "Failed fetching achievements from Steam API");
 
-    mockedAxios.get.mockRejectedValue(externalApiError);
+    mockedAxios.get.mockRejectedValue(apiError);
 
     const result = apiHandlerService.getPlayerAchievements(1);
 
-    await expect(result).rejects.toThrow(ExternalApiError);
+    await expect(result).rejects.toThrow(apiError);
 
     expect(mockedAxios.get).toHaveBeenCalledTimes(1);
   });
