@@ -3,6 +3,9 @@
 
 Track your game achievements and trophies in one place — simple, fast, and gamer-friendly.
 
+![1746545448650](https://github.com/user-attachments/assets/4702544b-9ddb-49a4-8b64-1f7fc3b79780)
+
+
 ## Setting Up the API
 
 ### Step 1: Running Services with Docker Compose
