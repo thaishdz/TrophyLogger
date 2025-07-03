@@ -2,6 +2,7 @@ import winston from 'winston';
 
 // Crea un logger con diferentes configuraciones para consola y archivos
 const logger = winston.createLogger({
+
   /**
    * logger.level -> Determina qué mensajes de logs se verán
    */
@@ -9,15 +10,18 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.printf(({ timestamp, level, message }) => {
-      return `${timestamp} [${level}]: ${message}`;
+      // Asegura que los objetos se serialicen correctamente
+      const formattedMessage = typeof message === 'object' 
+        ? JSON.stringify(message, null, 2) 
+        : message;
+      return `${timestamp} [${level}]: ${formattedMessage}`;
     })
   ),
   transports: [
     // Log en consola
     new winston.transports.Console({
       format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
+        winston.format.colorize()
       )
     }),
     // Log en archivo

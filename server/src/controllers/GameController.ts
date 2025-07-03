@@ -26,7 +26,6 @@ export class GameController {
       // TODO: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en BBDD
       const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary();
       const matchedGames = this.gameService.findGames(gameName, gamesLibrary);
-
       res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', matchedGames));
       
     } catch (error) {

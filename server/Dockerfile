@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-# Establece el directorio de trabajo
+# Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
 # Copiar el archivo package.json y package-lock.json

@@ -7,10 +7,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./build",
-    "rootDir": "./src",
+    "rootDir": "src",
     "typeRoots": [
       "./node_modules/@types",
-      "src/shared/types" // mi directorio de tipos
+      "src/shared/types"
     ]
   },
   "include": [

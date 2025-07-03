@@ -1,0 +1,6 @@
+# this will help us ignore
+.git
+.gitignore
+**/node_modules
+**/npm-debug.log
+build

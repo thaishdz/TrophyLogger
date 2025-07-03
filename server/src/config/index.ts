@@ -1,9 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, "./.env")}); // se usa path.resolve para asegurar de que se encuentra el archivo, incluso si la app se ejecuta desde diferentes ubicaciones
-
-//console.debug(dotenv.config({ path: path.resolve(__dirname, "./.env")}));
+dotenv.config({ path: path.resolve(__dirname, "./.env")}); // Busca el .env en la raíz del proyecto
 
 /**
  * Hice esto porque cuando accedemos a process.env.PORT
@@ -30,7 +28,6 @@ interface Config {
   API_KEY: string;
   STEAM_ID: string;
 }
-
 
 const getEnv = (): ENV => {
   return {

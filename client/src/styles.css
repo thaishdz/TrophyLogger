@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+/**
+ * Custom styles for the TrophyFront application.
+ *
+ * Background ------> 
+ * Botones    ------> #E9B872
+ * Locked Achievements ------> #A63D40
+ * Achieved ----> #90A959
+ * Misc -----> #6494AA
+ */
+
+body {  
+    font-family: var(--font-sans);
+    font-weight: medium;
+}
