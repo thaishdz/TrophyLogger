@@ -12,8 +12,6 @@ services: # los servicios son los contenedores que se ejecutan
     volumes: # Mapea los directorios locales con los directorios dentro del contenedor
       - ./server:/app  # Mapea todo el directorio actual, así podrá obtener el package.json para ejecutar el script "start"
       - /app/node_modules  # Evita conflictos con node_modules local
-    depends_on:
-      - mongo # Asegura que MongoDB se inicie antes de la API
     networks:
       - trophy-network
   
@@ -25,30 +23,12 @@ services: # los servicios son los contenedores que se ejecutan
     container_name: frontend
     ports:
       - "3000:3000"
-    environment:
-      - REACT_APP_API_URL=http://localhost:5001  # URL de la API
     volumes:
-      - ./client:/app # Sincroniza la carpeta local con la carpeta del contenedor
-      - /app/node_modules
+      - ./client:/frontend # Sincroniza la carpeta local con la carpeta del contenedor
     depends_on:
       - api 
     networks:
       - trophy-network
-
-  mongo:
-    image: mongo:latest
-    container_name: mongo
-    volumes:
-      - mongo-data:/data/db # Volumen para persistir los datos de MongoDB
-    ports:
-      - "27017:27017"
-    networks:
-      - trophy-network
-
-
-volumes:
-  mongo-data: {}
-
 
 # Red para que los contenedores se comuniquen
 networks:

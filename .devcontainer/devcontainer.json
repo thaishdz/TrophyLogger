@@ -1,0 +1,13 @@
+
+{
+    "name": "Dev Container Trophy",
+    "dockerComposeFile": "../compose.yaml",
+    "service": "frontend",
+    "workspaceFolder": "/frontend",
+    "runServices": ["api"],
+    "forwardPorts": [5001, 3000],
+    "remoteUser": "node",
+    "remoteEnv": {
+        "NODE_ENV": "development"
+    }
+}

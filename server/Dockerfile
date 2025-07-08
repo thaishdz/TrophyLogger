@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:lts-bullseye
 
 # Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
