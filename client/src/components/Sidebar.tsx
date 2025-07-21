@@ -4,7 +4,8 @@ function Sidebar() {
   return (
   <div className="w-20 bg-white shadow-sm min-h-screen fixed left-0 top-0 flex flex-col items-center py-6">
     <div className="w-10 h-10 flex items-center justify-center mb-8">
-      <svg className="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg className="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
+        fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
         <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </svg>

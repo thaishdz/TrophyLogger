@@ -11,8 +11,8 @@ function GameCard({game}: GameCardProps) {
         <div className="w-8 h-8 rounded-full flex items-center justify-center">
           <svg className="h-5 w-5 text-yellow-500"
             width="24" height="24" viewBox="0 0 24 24" 
-            stroke-width="2" stroke="currentColor" fill="none" 
-            stroke-linecap="round" stroke-linejoin="round">  
+            strokeWidth="2" stroke="currentColor" fill="none" 
+            strokeLinecap="round" strokeLinejoin="round">  
             <path stroke="none" d="M0 0h24v24H0z"/>  
             <rect x="2" y="6" width="20" height="12" rx="2" />  
             <path d="M6 12h4m-2 -2v4" />  

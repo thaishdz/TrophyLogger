@@ -1,20 +1,14 @@
-# Stage 1: Build
-FROM node:18-alpine as build
+FROM node:18-alpine AS development
+ENV NODE_ENV development
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --only=production      # Solo deps de producción
+RUN npm install
 
 COPY . .
-RUN npm run build                 # Genera build estático
 
-# Stage 2: Serve
-FROM nginx:alpine               
+EXPOSE 3000
 
-COPY --from=build /app/build /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

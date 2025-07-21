@@ -11,11 +11,7 @@ export interface Game {
 
 function GamesLibrary() {
 
-  const gameList: Game[] = [{
-      name: "Hades",
-      percent: 71,
-      totalAchievements: "35/49"
-  }];
+  const gameList: Game[] = [];
   
   return (
     <>
@@ -28,7 +24,7 @@ function GamesLibrary() {
             gameList?.length ? gameList.map(game => 
             (<GameCard key={game.name} game={game} />))
             : 
-            <div>Esto está muy vacío</div>
+            <div>Esto está muy vacío...</div>
           }
         </div>
     </>

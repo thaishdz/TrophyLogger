@@ -3,10 +3,15 @@
     "name": "Dev Container Trophy",
     "dockerComposeFile": "../compose.yaml",
     "service": "frontend",
-    "workspaceFolder": "/frontend",
+    "workspaceFolder": "/app",
     "runServices": ["api"],
-    "forwardPorts": [5001, 3000],
-    "remoteUser": "node",
+    "forwardPorts": [5001,3000],
+    "portsAttributes": {
+        "3000": {
+            "onAutoForward": "notify"
+        }
+    },
+    //"remoteUser": "node",
     "remoteEnv": {
         "NODE_ENV": "development"
     }

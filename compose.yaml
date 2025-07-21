@@ -19,12 +19,17 @@ services: # los servicios son los contenedores que se ejecutan
   frontend:
     build:
       context: ./client
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "3000:3000"
+      - "3000:3000" 
     volumes:
-      - ./client:/frontend # Sincroniza la carpeta local con la carpeta del contenedor
+      - ./client:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # Para sistemas de archivos en contenedores
+      - WATCHPACK_POLLING=true 
+      - WDS_SOCKET_HOST=localhost     # ← Para WebSocket
+      - WDS_SOCKET_PORT=3000          # ← Puerto WebSocket
     depends_on:
       - api 
     networks:
