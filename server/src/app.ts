@@ -13,11 +13,12 @@ const stream = {
   write: (message: string) => logger.info(message.trim()), // Envía los logs de morgan a winston
 };
 
+// Debe ir antes de la rutas para protegerlas
+app.use(cors()); // Permite TODAS las conexiones exteriores en PROD cambiarlo
+
 // Routes
 app.use("/api/v1", routes);
 
-// Middlewares
-app.use(cors()); // Permite TODAS las conexiones exteriores
 app.use(express.json()); // Middlware de entrada de datos,analiza el body para ver si es un JSON y lo parsea para el controller
 app.use(morgan("combined", { stream })); // Registra detalles de cada solicitud HTTP usando Winston
 
