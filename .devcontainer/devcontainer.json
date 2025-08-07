@@ -4,7 +4,7 @@
     "dockerComposeFile": "../compose.yaml",
     "service": "frontend",
     "workspaceFolder": "/app",
-    "runServices": ["api"],
+    "runServices": ["api","frontend"],
     "forwardPorts": [5001,3000],
     "portsAttributes": {
         "3000": {
