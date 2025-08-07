@@ -21,20 +21,19 @@ class AchievementsService {
     try {
       const { data }: ApiResponse<GameAchievementsResponse> =
         await this.steamService.getPlayerAchievements(gameId);
-      const { gameName, achievements } = data;
+
+      const { gameName, totalGameAchievements, achievements } = data;
 
       const achievementsDetails: AchievementDetails[] =
         await this.getAchievementsDetails(gameId);
 
-      const playerLockedAchievementsData: AchievementsLockedData[] =
+      const playerLockedAchievementsData: AchievementsLockedData[] = 
         this.getLockedAchievementsData(achievements, achievementsDetails);
-      const totalAchievementsLocked: number =
-        playerLockedAchievementsData.length;
-
+      
       const achievementsPlayerData: AchievementPlayerData = {
         gameName,
-        totalLocked: totalAchievementsLocked,
-        playerAchievementsData: playerLockedAchievementsData,
+        totalGameAchievements,
+        achievements: playerLockedAchievementsData,
       };
 
       return achievementsPlayerData;
@@ -63,12 +62,12 @@ class AchievementsService {
 
         return matchingUnachieved
           ? {
-              ...achievementDetail, // crea una copia del obj con todas sus propiedades
-              achieved: matchingUnachieved.achieved, // y le añade esta
+              ...achievementDetail,
+              achieved: matchingUnachieved.achieved,
             }
           : undefined;
       })
-      // con el filter nos aseguramos que el map siempre devuelva un valor
+      
       .filter(
         (
           lockedAchievementData,

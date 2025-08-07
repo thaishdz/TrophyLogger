@@ -4,8 +4,8 @@
 
 export interface AchievementPlayerData {
     gameName: string,
-    totalLocked: number,
-    playerAchievementsData: AchievementsLockedData[]
+    totalGameAchievements: number,
+    achievements: AchievementsLockedData[]
 }
 
 export interface AchievementsLockedData extends AchievementDetails {
@@ -37,6 +37,7 @@ export interface AchievementPlayerAchievedStats {
 }
 
 export interface GameAchievementsResponse {
-    gameName: string;
+    gameName: string,
+    totalGameAchievements: number,
     achievements: AchievementPlayerAchievedStats[];
 }

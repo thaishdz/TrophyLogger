@@ -1,10 +1,13 @@
-import {Game} from './GamesLibrary';
+import { GameData } from "../types/game";
 
 interface GameCardProps {
-  game: Game
+  game: GameData
 }
 
 function GameCard({game}: GameCardProps) {
+  const totalUnlocked = game.totalGameAchievements - game.achievements.length;
+  const completionPercentage = Math.round((totalUnlocked / game.totalGameAchievements) * 100);
+  console.log("Esta es la tarjeta game:", game)
   return (
     <div className="bg-gray-100 p-6 rounded-lg mt-5">
       <div className="mb-4">
@@ -22,8 +25,8 @@ function GameCard({game}: GameCardProps) {
         </div>
       </div>
       
-      <h2 className="text-2xl font-bold mb-1">{game.name}</h2>
-      <p className="text-gray-600 mb-4">{game.percent}% Complete • {game.totalAchievements} Achievements</p>
+      <h2 className="text-2xl font-bold mb-1">{game.gameName}</h2>
+      <p className="text-gray-600 mb-4">{completionPercentage}% Complete • {totalUnlocked}/{game.totalGameAchievements} Achievements</p>
       <button className="bg-[#e9b872] px-4 py-2 rounded-md border-3 cursor-pointer">
         View Details
       </button>

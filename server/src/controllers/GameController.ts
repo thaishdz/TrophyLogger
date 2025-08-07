@@ -2,18 +2,20 @@ import { Request, Response, NextFunction } from "express";
 
 import GameService from "../services/games/GameService";
 import AchievementsService from "../services/achievements/AchievementsService";
-import SteamService from "../services/steam/SteamService";
 
-import { GameData, GameAchievementsReponse } from "../shared/types/game";
+import { GameData } from "../shared/types/game";
 import { AchievementPlayerData } from "../shared/types/achievement";
 import { createApiResponse } from "../common/http/responses";
 import { HTTP_RESPONSE_STATUS } from "../common/http/constants";
+import { SteamApiError } from "../exceptions/SteamApiError";
+import logger from "../config/logger";
+
+
 
 export class GameController {
   constructor(
     private gameService: GameService,
     private achievementService: AchievementsService,
-    private steamService: SteamService,
   ) {}
 
   public searchGame = async (
@@ -26,46 +28,30 @@ export class GameController {
       // TODO: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en BBDD
       const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary();
       const matchedGames = this.gameService.findGames(gameName, gamesLibrary);
-      res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', matchedGames));
+      const gamesWithAchievements = await Promise.all(matchedGames.map(game => this.gameAchievements(game.gameId)));
+            
+      res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', gamesWithAchievements));
       
     } catch (error) {
       next(error);
     }
   };
 
-  public gameAchievements = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
+  private async gameAchievements(gameId: number): Promise<GameData> {
     try {
-      const gameId = Number(req.params.gameId);
-
-      //REFACTOR: Añadir validación de gameId a través de express-validator
-      if (isNaN(gameId)) {
-        res.status(400).json({ error: "Invalid gameId" });
-      }
-
       const playerDataAchievements: AchievementPlayerData =
         await this.achievementService.getLockedAchievementsDataForPlayer(
           gameId,
         );
-      const gameData: GameData = {
+      const gameAchievements: GameData = {
         gameId,
-        name: playerDataAchievements.gameName,
-        cover: await this.steamService.getCoverGame(
-          playerDataAchievements.gameName,
-          gameId,
-        ),
-      };
-      const gameAchievementsResponse: GameAchievementsReponse = {
-        data: gameData,
-        achievements: playerDataAchievements,
+        ...playerDataAchievements,
       };
 
-      res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', gameAchievementsResponse));
+      return gameAchievements;
+
     } catch (error) {
-      next(error);
+      throw new SteamApiError(500, `An error occurred while fetching achievements for gameID ${gameId}`);
     }
   };
 }

@@ -2,16 +2,11 @@ import GameCard from "./GameCard";
 import SearchBox from "./SearchBox";
 import GameStatusTabs from "./GameStatusTabs";
 import { useEffect,useState } from "react";
+import { GameData } from "../types/game";
 
-
-export interface Game {
-  name: string
-  percent: number
-  totalAchievements: string
-}
 
 function GamesLibrary() {
-  const [games, setGames] = useState<Game[]>([]);
+  const [games, setGames] = useState<GameData[]>([]);
 
   useEffect(() => {
   console.log("🧠 Estado games actualizado:", games);
@@ -27,7 +22,7 @@ function GamesLibrary() {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {
             games.length ? games.map(game => 
-            (<GameCard key={game.name} game={game} />))
+            (<GameCard key={game.gameId} game={game} />))
             : 
             <div>Esto está muy vacío...</div>
           }

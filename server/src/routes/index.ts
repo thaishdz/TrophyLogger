@@ -18,10 +18,6 @@ const gamesController = new GameController(
   steamService,
 );
 
-router.get(`/`, (req, res) => {
-  res.send("Welcome to the Steam API!");
-});
-
 // Se ejecutan en este orden: middleware1 -> middleware2 -> controladorFinal
 /*router.get(`/dashboard`, getAchivementStats); */
 router.get(

@@ -59,8 +59,17 @@ class SteamService {
       const url = `${baseUrl}?${params.toString()}`;
 
       const response = await axios.get(url);
-      const playerAchievementsData: T = response.data.playerstats;
-      return { data: playerAchievementsData };
+      const playerAchievementsData = response.data.playerstats;
+      
+      const totalAchievements = playerAchievementsData.achievements.length;
+
+      return {
+        data: {
+          ...playerAchievementsData,
+          totalGameAchievements: totalAchievements
+        }
+      } 
+      
     } catch (error: any) {
       throw new SteamApiError(
           error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR, 
@@ -82,8 +91,7 @@ class SteamService {
       const url = `${baseUrl}?${params.toString()}`;
       
       const response = await axios.get(url);
-      const achievementsDetails: T =
-        response.data.game.availableGameStats.achievements;
+      const achievementsDetails: T = response.data.game.availableGameStats.achievements;
 
       return { data: achievementsDetails };
     } catch (error: any) {

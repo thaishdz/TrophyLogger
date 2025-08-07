@@ -16,12 +16,7 @@ export interface GameLibraryResponse {
     playtime_disconnected: boolean
 }
 
-export interface GameAchievementsReponse {
-    data: GameData,
-    achievements: AchievementPlayerData
-}
-export interface GameData {
-    gameId: number,
-    name: string,
-    cover?: string
+export interface GameData extends AchievementPlayerData {
+    gameId: number;
+    cover?: string;
 }

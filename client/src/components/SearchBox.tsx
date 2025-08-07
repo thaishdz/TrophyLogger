@@ -1,10 +1,10 @@
 import { FormEvent, useState } from "react";
-import { Game } from "./GamesLibrary";
 import { API_URL } from "../config";
+import { GameData } from "../types/game";
 
 
 type Props = {
-  onSearchResults: (games: Game[]) => void
+  onSearchResults: (games: GameData[]) => void
 }
 
 function SearchBox(props: Props) {
