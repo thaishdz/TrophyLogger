@@ -1,18 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 
-import GameService from "../services/games/GameService";
-import AchievementsService from "../services/achievements/AchievementsService";
-
-import { GameData } from "../shared/types/game";
-import { AchievementPlayerData } from "../shared/types/achievement";
-import { createApiResponse } from "../common/http/responses";
-import { HTTP_RESPONSE_STATUS } from "../common/http/constants";
-import { SteamApiError } from "../exceptions/SteamApiError";
-import logger from "../config/logger";
+import { AchievementPlayerData, GameData } from "@trophylogger-types";
+import { createApiResponse } from "@common/http";
+import { HTTP_RESPONSE_STATUS } from "@common/http/constants";
+import { SteamApiError } from "@exceptions";
+import logger from "@config/logger";
+import { AchievementsService, GameService } from '@/services';
 
 
 
-export class GameController {
+export default class GameController {
   constructor(
     private gameService: GameService,
     private achievementService: AchievementsService,

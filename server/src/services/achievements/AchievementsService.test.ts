@@ -1,5 +1,5 @@
-import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
-import { SteamApiError } from "../../exceptions/SteamApiError";
+import { HTTP_RESPONSE_STATUS } from "@common/http";
+import { SteamApiError } from "@exceptions";
 import SteamService from "../steam/SteamService";
 import AchievementsService from "./AchievementsService";
 
@@ -9,7 +9,7 @@ import {
   mockAchievementsDetails,
 } from "./__fixtures__/dataMock";
 
-jest.mock("../../services/steam/SteamService");
+jest.mock("@services/steam/SteamService");
 
 describe("AchievementsService --- Steam API", () => {
   let steamServiceMock: jest.Mocked<SteamService>;

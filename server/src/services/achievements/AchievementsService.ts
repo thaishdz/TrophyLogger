@@ -1,16 +1,16 @@
-import SteamService from "../steam/SteamService";
-import { ApiResponse } from "../../shared/types/apiResponse";
-import { SteamApiError } from "../../exceptions/SteamApiError";
-import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
+import SteamService from '../steam';
+import { SteamApiError } from "@exceptions";
+import { HTTP_RESPONSE_STATUS } from "@common/http/constants";
 
 import {
+  ApiResponse,
   AchievementDetails,
   GameAchievementsResponse,
   AchievementDetailsResponse,
   AchievementPlayerAchievedStats,
   AchievementPlayerData,
   AchievementsLockedData,
-} from "../../shared/types/achievement";
+} from "@trophylogger-types";
 
 class AchievementsService {
   constructor(private steamService: SteamService) {}

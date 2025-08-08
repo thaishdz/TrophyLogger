@@ -1,4 +1,4 @@
-export class SteamApiError extends Error {
+export default class SteamApiError extends Error {
 
     status: number;
     data?: {};

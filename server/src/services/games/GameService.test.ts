@@ -1,6 +1,6 @@
-import SteamService from "../steam/SteamService";
+import { GameData } from '@trophylogger-types';
+import SteamService from '../steam';
 import GameService from "./GameService";
-import { GameData } from "../../shared/types/game";
 
 // Simulo el comportamiento de la función, pero no me enfoco en la llamada HTTP de eso se encarga otro test
 jest.mock("../../services/steam/SteamService");
