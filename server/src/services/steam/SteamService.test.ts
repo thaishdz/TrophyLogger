@@ -1,8 +1,8 @@
 import ApiHandlerService from "./SteamService";
 import axios from "axios";
 import config from "../../config";
-import { SteamApiError } from "../../exceptions/SteamApiError";
-import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
+import { SteamApiError } from '@/exceptions';
+import { HTTP_RESPONSE_STATUS } from '@/common/http';
 
 
 jest.mock("axios");
