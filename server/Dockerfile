@@ -13,7 +13,7 @@ RUN npm install
 COPY . .
 
 # Estoy escuchandoooo
-EXPOSE 5000
+EXPOSE 8000
 
 # Ejecuta el script del package.json que usa ts-node-dev
 CMD ["npm", "run", "dev"]
