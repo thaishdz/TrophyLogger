@@ -6,7 +6,7 @@ services: # los servicios son los contenedores que se ejecutan
       dockerfile: Dockerfile # Le dice a Docker que use el Dockerfile en el directorio actual para construir la imagen
     container_name: api
     ports:
-      - "5001:5000"
+      - "8000:8000"
     env_file:
       - server/src/config/.env # Carga las variables de entorno desde el archivo .env
     volumes: # Mapea los directorios locales con los directorios dentro del contenedor
