@@ -1,11 +1,8 @@
 import Fuse, { FuseResult } from "fuse.js"; // mi santo grial para realizar las búsquedas
-import SteamService from "../steam/SteamService";
-import { GameData } from "../../shared/types/game";
-
-import { ApiResponse } from "../../shared/types/apiResponse";
-import { GameLibraryResponse } from "../../shared/types/game";
-import { SteamApiError } from "../../exceptions/SteamApiError";
-import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
+import { HTTP_RESPONSE_STATUS } from "@common/http";
+import { SteamApiError } from '@/exceptions';
+import { GameData, ApiResponse, GameLibraryResponse } from '@trophylogger-types';
+import SteamService from '../steam';
 
 class GameService {
   /*
