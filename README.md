@@ -6,18 +6,26 @@ Track your game achievements and trophies in one place — simple, fast, and gam
 ![1746545448650](https://github.com/user-attachments/assets/4702544b-9ddb-49a4-8b64-1f7fc3b79780)
 
 
-## Setting Up the API
+## Setup
 
-### Step 1: Running Services with Docker Compose
+### Prerequisites
 
-To start the services, run the following command:
-```sh
-docker compose up 
-```
-This will build the images automatically if they are not already available on your machine.
+- [Docker](https://docs.docker.com/get-docker/) with Compose v2 (`docker compose version`)
+- `.env` file at `server/src/config/.env`
 
-If you prefer to run the containers in the background, use detached mode by adding the -d flag:
+### Run
 
 ```sh
-docker compose up -d
+docker compose up
 ```
+
+### Stop
+
+```sh
+docker compose down
+```
+
+### Access
+
+- API: [http://localhost:8000](http://localhost:8000)
+- Frontend: [http://localhost:3000](http://localhost:3000)
