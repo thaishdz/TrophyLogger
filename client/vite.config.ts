@@ -14,9 +14,9 @@ export default defineConfig({
       interval: 1000
     },
     hmr: {
-      host: 'localhost',  // ← Importante para dev containers
+      host: 'localhost',
       port: 3000,
-      clientPort: 3000    // ← Esto le dice al browser qué puerto usar
+      clientPort: 3000 
     }
   }
 })
