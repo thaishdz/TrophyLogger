@@ -1,7 +1,7 @@
 import js from '@eslint/js'
-import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
@@ -23,6 +23,25 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      'semi': [
+        'error',
+        'never'
+      ], // Enforce no semicolons
+      'quotes': [
+        'error',
+        'single'
+      ], // Enforce single quotes
+      'indent': [
+        'error',
+        2,
+        {
+          'SwitchCase': 1
+        }
+      ], // Enforce 2 spaces indentation
+      'eol-last': [
+        'error',
+        'always'
+      ], // Enforce newline at the end of file
     },
   },
 )
