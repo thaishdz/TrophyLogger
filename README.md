@@ -1,7 +1,7 @@
 
 # 🏆 TrophyLogger (v0)
 
-Track your game achievements and trophies in one place — simple, fast, and gamer-friendly.
+TrophyLogger centraliza tus logros de Steam en un solo lugar.
 
 ![1746545448650](https://github.com/user-attachments/assets/4702544b-9ddb-49a4-8b64-1f7fc3b79780)
 
