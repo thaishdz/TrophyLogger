@@ -10,18 +10,6 @@ const userSchema = new Schema ({
   authMethods: {
     type: [authMethodSchema]
   },
-  steamProfile: {
-    steamId64: {
-      type: String,
-      required: false
-    },
-    apiKeyEncrypted: {
-      type: String
-    },
-    iv: {
-      type: String
-    }
-  }
 },{
   timestamps: true
 });
