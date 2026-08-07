@@ -1,17 +1,19 @@
-services: # los servicios son los contenedores que se ejecutan
-  # servicio para la API de node
+services:
   api:
-    build: # Define cómo construir la imagen Docker
-      context: ./server # Directorio donde Docker buscará los archivos para construir la imagen
-      dockerfile: Dockerfile # Le dice a Docker que use el Dockerfile en el directorio actual para construir la imagen
+    build:
+      context: ./server
+      dockerfile: Dockerfile
     container_name: api
     ports:
       - "8000:8000"
     env_file:
-      - server/src/config/.env # Carga las variables de entorno desde el archivo .env
-    volumes: # Mapea los directorios locales con los directorios dentro del contenedor
-      - ./server:/app  # Mapea todo el directorio actual, así podrá obtener el package.json para ejecutar el script "start"
-      - /app/node_modules  # Evita conflictos con node_modules local
+      - server/src/config/.env
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      database-init:
+        condition: service_completed_successfully
     networks:
       - trophy-network
 
@@ -24,13 +26,43 @@ services: # los servicios son los contenedores que se ejecutan
       - "3000:3000"
     volumes:
       - ./client:/app
-      - /app/node_modules  # Volumen anónimo: protege el node_modules de Linux (generado en el build) para que no lo tape el bind mount, aunque tengas node_modules local
+      - /app/node_modules
     depends_on:
       - api
     networks:
       - trophy-network
 
-# Red para que los contenedores se comuniquen
+  database:
+    image: mongo:8.2
+    container_name: database
+    command: mongod --replSet rs0 --bind_ip_all # rs0 es el nombre del replica set
+    ports:
+      - "27017:27017"
+    volumes:
+      - database-data:/data/db
+    healthcheck:
+      test: mongosh --eval "db.adminCommand('ping')" --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - trophy-network
+
+  # inicializa el replica set y termina
+  database-init:
+    image: mongo:8.2
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./scripts/init-replica-set.js:/init-replica-set.js:ro
+    entrypoint: mongosh --host database:27017 /init-replica-set.js
+    networks:
+      - trophy-network
+
 networks:
   trophy-network:
     driver: bridge
+
+volumes:
+  database-data:
