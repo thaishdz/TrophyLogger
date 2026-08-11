@@ -11,7 +11,46 @@
     "typeRoots": [
       "./node_modules/@types",
       "src/shared/types"
-    ]
+    ],
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@common": [
+        "./common"
+      ],
+      "@common/*": [
+        "./common/*"
+      ],
+      "@middlewares": [
+        "./middlewares"
+      ],
+      "@middlewares/*": [
+        "./middlewares/*"
+      ],
+      "@controllers": [
+        "./controllers"
+      ],
+      "@controllers/*": [
+        "./controllers/*"
+      ],
+      "@exceptions": [
+        "./exceptions"
+      ],
+      "@exceptions/*": [
+        "./exceptions/*"
+      ],
+      "@services": [
+        "./services/*"
+      ],
+      "@services/*": [
+        "./services/*"
+      ],
+      "@trophylogger-types": [
+        "./shared/types"
+      ],
+    }
   },
   "include": [
     "src/**/*.ts"

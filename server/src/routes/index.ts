@@ -1,10 +1,8 @@
 import { Router } from "express";
 
-import { validateAuthParams } from "../middlewares/auth";
-import { GameController } from "../controllers/GameController";
-import SteamService from "../services/steam/SteamService";
-import GameService from "../services/games/GameService";
-import AchievementsService from "../services/achievements/AchievementsService";
+import { validateAuthParams } from "@middlewares/auth";
+import { GameController } from "@controllers";
+import { AchievementsService, GameService, SteamService } from '@/services';
 
 const router = Router();
 

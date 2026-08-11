@@ -2,10 +2,9 @@ import axios from "axios";
 
 import config from "../../config";
 
-import { ApiResponse } from "../../shared/types/apiResponse";
-import { SteamApiError } from "../../exceptions/SteamApiError";
-import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
-import { GameLibraryResponse } from "../../shared/types/game";
+import { HTTP_RESPONSE_STATUS } from "@/common/http";
+import { ApiResponse, GameLibraryResponse } from '@trophylogger-types';
+import { SteamApiError } from '@/exceptions';
 
 class SteamService {
   private API_URL: string;
