@@ -2,6 +2,7 @@ import passport, { DoneCallback } from 'passport';
 import { SteamOpenIdStrategy, SteamOpenIdUserProfile} from 'passport-steam-openid';
 import { SteamAuthService } from '../services/steam/SteamAuthService';
 import config from "./";
+import { User } from '../models/User';
 
 const steamAuthService = new SteamAuthService()
 
@@ -37,7 +38,6 @@ passport.serializeUser((user: any, done) => {
 // Se ejecuta en CADA request que trae esa cookie, identifica quién es bajo esa cookie
 passport.deserializeUser(async (id: string, done) => {
   try {
-    const { User } = await import('../models/User');
     const user = await User.findById(id);
     done(null, user);
   } catch (err) {
@@ -45,3 +45,4 @@ passport.deserializeUser(async (id: string, done) => {
   }
 });
 
+export { passport };
