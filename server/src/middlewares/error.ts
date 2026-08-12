@@ -3,13 +3,16 @@ import { HttpException } from "../exceptions/HttpException";
 import { createApiResponse } from "../common/http/responses";
 
 
-function errorMiddleware(error:HttpException, req: Request, res: Response, next: NextFunction) {
+function errorMiddleware(error:HttpException | Error, req: Request, res: Response, next: NextFunction) {
+    console.error('FULL ERROR:', error);
+    const status = error instanceof HttpException  ? error.status : 500;
+    const message = error.message || "Internal server error";
 
-    res.status(error.status).json(
+    res.status(status).json(
         createApiResponse(
-            false, 
-            error.status,
-            error.message,
+            false,
+            status,
+            message,
             null,
             { type: req.method, url: req.originalUrl }
         )

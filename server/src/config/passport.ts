@@ -1,10 +1,25 @@
 import passport, { DoneCallback } from 'passport';
 import { SteamOpenIdStrategy, SteamOpenIdUserProfile } from 'passport-steam-openid';
+import axios from 'axios';
 import { User } from '../models/User';
 import { SteamAuthService } from '../services/steam/SteamAuthService';
 import config from "./";
 
 const steamAuthService = new SteamAuthService()
+
+// Steam a veces devuelve el Content-Type mal (text/html o text/plain
+// en vez de application/json), aunque el cuerpo SÍ sea JSON válido.
+// axios, sin este forzado, no auto-parsea y entrega el body como string
+// crudo, lo cual rompe la validación interna de passport-steam-openid.
+const steamHttpClient = axios.create({
+    transformResponse: [(data) => {
+        try {
+            return JSON.parse(data);
+        } catch {
+            return data;
+        }
+    }]
+});
 
 
 passport.use(
@@ -12,7 +27,8 @@ passport.use(
         returnURL: 'http://localhost:8000/auth/steam/return', // back to the backend to process the Steam callback
         profile: true,
         apiKey: config.STEAM_API_KEY,
-        maxNonceTimeDelay: 30 // Optional, in seconds, time between creation and verification of nonce date
+        maxNonceTimeDelay: 120, // Optional, in seconds, time between creation and verification of nonce date
+        httpClient: steamHttpClient,
     }, async (
         req: Request,
         identifier: string,
@@ -25,7 +41,8 @@ passport.use(
             const user = await steamAuthService.findOrCreateSteamUser(profile.steamid, profile.personaname)
             done(null, user) // llama a serializeUser
         } catch (error) {
-            done(error as Error)
+          console.error('STEAM AUTH ERROR:', error)
+          done(error as Error)
         }
     })
 )
