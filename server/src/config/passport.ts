@@ -9,7 +9,7 @@ const steamAuthService = new SteamAuthService()
 
 passport.use(
     new SteamOpenIdStrategy({
-        returnURL: 'http://localhost:3000/auth/steam',
+        returnURL: 'http://localhost:8000/auth/steam/return', // back to the backend to process the Steam callback
         profile: true,
         apiKey: config.API_KEY,
         maxNonceTimeDelay: 30 // Optional, in seconds, time between creation and verification of nonce date
