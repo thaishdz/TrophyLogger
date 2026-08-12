@@ -2,28 +2,28 @@ import axios from "axios";
 
 import config from "../../config";
 
-import { ApiResponse } from "../../shared/types/apiResponse";
-import { SteamApiError } from "../../exceptions/SteamApiError";
 import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
+import { SteamApiError } from "../../exceptions/SteamApiError";
+import { ApiResponse } from "../../shared/types/apiResponse";
 import { GameLibraryResponse } from "../../shared/types/game";
 
 class SteamService {
   private API_URL: string;
   private API_URL_STORE: string;
-  private API_KEY: string;
+  private STEAM_API_KEY: string;
   private STEAM_ID: string;
 
   constructor() {
     this.API_URL = config.API_URL;
     this.API_URL_STORE = config.API_URL_STORE;
-    this.API_KEY = config.API_KEY;
+    this.STEAM_API_KEY = config.STEAM_API_KEY;
     this.STEAM_ID = config.STEAM_ID;
   }
 
   async getOwnedGames(): Promise<ApiResponse<GameLibraryResponse[]>> {
     const baseUrl = `${this.API_URL}/IPlayerService/GetOwnedGames/v1/`
-    const params = new URLSearchParams({ 
-      key: this.API_KEY,
+    const params = new URLSearchParams({
+      key: this.STEAM_API_KEY,
       steamid: this.STEAM_ID,
       include_appinfo: 'true', // URLSearchParams expects strings, not booleans
       include_played_free_games: 'true'
@@ -41,7 +41,7 @@ class SteamService {
       return { data: gamesLibrary };
     } catch (error: any) {
       throw new SteamApiError(
-        error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR, 
+        error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR,
         "Failed fetching games from Steam API",
         {error}
       );
@@ -53,14 +53,14 @@ class SteamService {
       const baseUrl = `${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/`;
       const params = new URLSearchParams({
         appid: gameId.toString(),
-        key: this.API_KEY,
+        key: this.STEAM_API_KEY,
         steamid: this.STEAM_ID
       });
       const url = `${baseUrl}?${params.toString()}`;
 
       const response = await axios.get(url);
       const playerAchievementsData = response.data.playerstats;
-      
+
       const totalAchievements = playerAchievementsData.achievements.length;
 
       return {
@@ -68,12 +68,12 @@ class SteamService {
           ...playerAchievementsData,
           totalGameAchievements: totalAchievements
         }
-      } 
-      
+      }
+
     } catch (error: any) {
       throw new SteamApiError(
-          error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR, 
-          "Failed fetching achievements from SteamAPI", 
+          error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR,
+          "Failed fetching achievements from SteamAPI",
         {error}
       );
     }
@@ -84,19 +84,19 @@ class SteamService {
 
       const baseUrl = `${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/`;
       const params = new URLSearchParams({
-        key: this.API_KEY,
+        key: this.STEAM_API_KEY,
         appid: appId.toString(),
       });
 
       const url = `${baseUrl}?${params.toString()}`;
-      
+
       const response = await axios.get(url);
       const achievementsDetails: T = response.data.game.availableGameStats.achievements;
 
       return { data: achievementsDetails };
     } catch (error: any) {
         throw new SteamApiError(
-          error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR, 
+          error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR,
           "Failed fetching SchemaForGame from SteamAPI"
         );
     }
@@ -115,7 +115,7 @@ class SteamService {
       return game?.tiny_image || ""; // la cover, retorna '' si game es undefined
     } catch (error: any) {
       throw new SteamApiError(
-        error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR, 
+        error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR,
         "Failed fetching Cover game from SteamAPI"
       );
     }

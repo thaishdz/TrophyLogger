@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import config from '../config';
 
 
@@ -9,12 +9,12 @@ export const validateAuthParams = (req: Request, res: Response, next: NextFuncti
     //    - Pasar al siguiente middleware/controlador usando next()
     //    - O terminar la petición enviando una respuesta
 
-    const API_KEY = config.API_KEY;
+    const STEAM_API_KEY = config.STEAM_API_KEY;
     const STEAM_ID = config.STEAM_ID;
 
     // 1. Añadimos datos a req para usarlos después
     req.steamAuth = {
-        apiKey: API_KEY,
+        apiKey: STEAM_API_KEY,
         steamId: STEAM_ID
     };
 

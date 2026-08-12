@@ -1,8 +1,8 @@
-import ApiHandlerService from "./SteamService";
 import axios from "axios";
+import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
 import config from "../../config";
 import { SteamApiError } from "../../exceptions/SteamApiError";
-import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
+import ApiHandlerService from "./SteamService";
 
 
 jest.mock("axios");
@@ -51,7 +51,7 @@ describe("Make requests to the Steam API", () => {
     const url = mockedAxios.get.mock.calls[0][0];
 
     // Verificamos que la URL contenga los parámetros esperados
-    expect(url).toContain("key=" + config.API_KEY);
+    expect(url).toContain("key=" + config.STEAM_API_KEY);
     expect(url).toContain("steamid=" + config.STEAM_ID);
     expect(url).toContain("include_appinfo=" + true);
     expect(url).toContain("include_played_free_games=" + true);
@@ -119,7 +119,7 @@ describe("Make requests to the Steam API", () => {
     const url = mockedAxios.get.mock.calls[0][0];
 
     // Verificamos que la URL contenga los parámetros esperados
-    expect(url).toContain("key=" + config.API_KEY);
+    expect(url).toContain("key=" + config.STEAM_API_KEY);
     expect(url).toContain("steamid=" + config.STEAM_ID);
 
     const resultExpected = {
@@ -192,7 +192,7 @@ describe("Make requests to the Steam API", () => {
     const url = mockedAxios.get.mock.calls[0][0];
 
     // Verificamos que la URL contenga los parámetros esperados
-    expect(url).toContain("key=" + config.API_KEY);
+    expect(url).toContain("key=" + config.STEAM_API_KEY);
 
     const resultExpected = {
       data: [

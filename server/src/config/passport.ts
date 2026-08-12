@@ -1,8 +1,8 @@
 import passport, { DoneCallback } from 'passport';
-import { SteamOpenIdStrategy, SteamOpenIdUserProfile} from 'passport-steam-openid';
+import { SteamOpenIdStrategy, SteamOpenIdUserProfile } from 'passport-steam-openid';
+import { User } from '../models/User';
 import { SteamAuthService } from '../services/steam/SteamAuthService';
 import config from "./";
-import { User } from '../models/User';
 
 const steamAuthService = new SteamAuthService()
 
@@ -11,7 +11,7 @@ passport.use(
     new SteamOpenIdStrategy({
         returnURL: 'http://localhost:8000/auth/steam/return', // back to the backend to process the Steam callback
         profile: true,
-        apiKey: config.API_KEY,
+        apiKey: config.STEAM_API_KEY,
         maxNonceTimeDelay: 30 // Optional, in seconds, time between creation and verification of nonce date
     }, async (
         req: Request,
