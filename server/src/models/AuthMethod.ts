@@ -14,13 +14,11 @@ export const authMethodSchema = new Schema({
   },
   steamId: {
     type: String,
-    required: false,
-    sparse: true
+    required: false
   },
   email: {
     type: String,
-    required: false,
-    sparse: true
+    required: false
   },
   passwordHash: {
     type: String
