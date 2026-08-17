@@ -2,7 +2,6 @@
 
 > **Decisión**: Guardar los métodos de autenticación (Steam, email) en una colección `AuthMethod` separada, referenciando a `User` mediante `userId`, en vez de un array embebido dentro del documento `User`.
 > **Fecha**: 2026-08-07
-> **Estado**: Activo
 
 ---
 
