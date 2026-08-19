@@ -1,23 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import config from '../config';
+import { createApiResponse } from '../common/http/responses';
 
 
-export const validateAuthParams = (req: Request, res: Response, next: NextFunction): void => {
-    // 1. Recibe la petición
-    // 2. Puede hacer validaciones, modificaciones, etc.
-    // 3. Puede:
-    //    - Pasar al siguiente middleware/controlador usando next()
-    //    - O terminar la petición enviando una respuesta
-
-    const STEAM_API_KEY = config.STEAM_API_KEY;
-    const STEAM_ID = config.STEAM_ID;
-
-    // 1. Añadimos datos a req para usarlos después
-    req.steamAuth = {
-        apiKey: STEAM_API_KEY,
-        steamId: STEAM_ID
-    };
-
-    // 2. Continuamos con el siguiente middleware o controlador
-    next();
-}
+export const ensureAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json(createApiResponse(false, 401, "Authentication Error", null, { type: req.method, url: req.originalUrl }))
+};

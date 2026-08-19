@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { validateAuthParams } from "../middlewares/auth";
+import { ensureAuthenticated } from "../middlewares/auth";
 import { GameController } from "../controllers/GameController";
 import SteamService from "../services/steam/SteamService";
 import GameService from "../services/games/GameService";
@@ -18,16 +18,14 @@ const gamesController = new GameController(
   steamService,
 );
 
-// Se ejecutan en este orden: middleware1 -> middleware2 -> controladorFinal
-/*router.get(`/dashboard`, getAchivementStats); */
 router.get(
   `/search`,
-  validateAuthParams,
+  ensureAuthenticated,
   gamesController.searchGame.bind(gamesController),
 );
 router.get(
   `/gameAchievements/:gameId`,
-  validateAuthParams,
+  ensureAuthenticated,
   gamesController.gameAchievements.bind(gamesController),
 );
 
