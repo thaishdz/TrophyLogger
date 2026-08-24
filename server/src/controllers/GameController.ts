@@ -8,16 +8,16 @@ import { AchievementPlayerData } from "../shared/types/achievement";
 import { createApiResponse } from "../common/http/responses";
 import { HTTP_RESPONSE_STATUS } from "../common/http/constants";
 import { SteamApiError } from "../exceptions/SteamApiError";
-import logger from "../config/logger";
-
+import { HttpException } from "../exceptions/HttpException";
 
 
 export class GameController {
   constructor(
     private gameService: GameService,
-    private achievementService: AchievementsService,
+    private achievementService: AchievementsService
   ) {}
 
+  // TODO: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en BBDD
   public searchGame = async (
     req: Request,
     res: Response,
@@ -25,23 +25,25 @@ export class GameController {
   ): Promise<void> => {
     try {
       const gameName = String(req.query.game);
-      // TODO: Llamar 1 sola vez a Steam para obtener la biblioteca y guardarla en BBDD
-      const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary();
+      if (!req.steamId) throw new HttpException(401, "SteamId no disponible");
+      const steamId = req.steamId;
+      const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary(steamId);
       const matchedGames = this.gameService.findGames(gameName, gamesLibrary);
-      const gamesWithAchievements = await Promise.all(matchedGames.map(game => this.gameAchievements(game.gameId)));
-            
+      const gamesWithAchievements = await Promise.all(matchedGames.map(game => this.gameAchievements(game.gameId, steamId)));
+
       res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', gamesWithAchievements));
-      
+
     } catch (error) {
       next(error);
     }
   };
 
-  private async gameAchievements(gameId: number): Promise<GameData> {
+  private async gameAchievements(gameId: number, steamId: string): Promise<GameData> {
     try {
       const playerDataAchievements: AchievementPlayerData =
         await this.achievementService.getLockedAchievementsDataForPlayer(
           gameId,
+          steamId
         );
       const gameAchievements: GameData = {
         gameId,

@@ -11,20 +11,18 @@ class SteamService {
   private API_URL: string;
   private API_URL_STORE: string;
   private STEAM_API_KEY: string;
-  private STEAM_ID: string;
 
   constructor() {
     this.API_URL = config.API_URL;
     this.API_URL_STORE = config.API_URL_STORE;
     this.STEAM_API_KEY = config.STEAM_API_KEY;
-    this.STEAM_ID = config.STEAM_ID;
   }
 
-  async getOwnedGames(): Promise<ApiResponse<GameLibraryResponse[]>> {
+  async getOwnedGames(steamId: string): Promise<ApiResponse<GameLibraryResponse[]>> {
     const baseUrl = `${this.API_URL}/IPlayerService/GetOwnedGames/v1/`
     const params = new URLSearchParams({
       key: this.STEAM_API_KEY,
-      steamid: this.STEAM_ID,
+      steamid: steamId,
       include_appinfo: 'true', // URLSearchParams expects strings, not booleans
       include_played_free_games: 'true'
     });
@@ -48,13 +46,13 @@ class SteamService {
     }
   }
 
-  async getPlayerAchievements<T>(gameId: number): Promise<ApiResponse<T>> {
+  async getPlayerAchievements<T>(gameId: number, steamId: string): Promise<ApiResponse<T>> {
     try {
       const baseUrl = `${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/`;
       const params = new URLSearchParams({
         appid: gameId.toString(),
         key: this.STEAM_API_KEY,
-        steamid: this.STEAM_ID
+        steamid: steamId
       });
       const url = `${baseUrl}?${params.toString()}`;
 

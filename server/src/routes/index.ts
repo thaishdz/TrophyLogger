@@ -5,6 +5,7 @@ import { GameController } from "../controllers/GameController";
 import SteamService from "../services/steam/SteamService";
 import GameService from "../services/games/GameService";
 import AchievementsService from "../services/achievements/AchievementsService";
+import { getSteamId } from "../middlewares/steamId";
 
 const router = Router();
 
@@ -14,18 +15,19 @@ const gameService = new GameService(steamService);
 const achievementsService = new AchievementsService(steamService);
 const gamesController = new GameController(
   gameService,
-  achievementsService,
-  steamService,
+  achievementsService
 );
 
 router.get(
   `/search`,
   ensureAuthenticated,
+  getSteamId,
   gamesController.searchGame.bind(gamesController),
 );
 router.get(
   `/gameAchievements/:gameId`,
   ensureAuthenticated,
+  getSteamId,
   gamesController.gameAchievements.bind(gamesController),
 );
 

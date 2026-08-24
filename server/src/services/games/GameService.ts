@@ -16,9 +16,9 @@ class GameService {
 
   constructor(private steamService: SteamService) {}
 
-  async getGamesLibrary(): Promise<GameData[]> {
+  async getGamesLibrary(steamId: string): Promise<GameData[]> {
     const { data }: ApiResponse<GameLibraryResponse[]> =
-      await this.steamService.getOwnedGames();
+      await this.steamService.getOwnedGames(steamId);
 
     if (!Array.isArray(data)) {
       throw new SteamApiError(HTTP_RESPONSE_STATUS.BAD_REQUEST, "Invalid response: expected an array");

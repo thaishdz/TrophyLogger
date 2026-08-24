@@ -13,23 +13,26 @@ import {
 } from "../../shared/types/achievement";
 
 class AchievementsService {
-  constructor(private steamService: SteamService) {}
+  constructor(
+    private steamService: SteamService
+  ) {}
 
   public async getLockedAchievementsDataForPlayer(
     gameId: number,
+    steamId: string
   ): Promise<AchievementPlayerData> {
     try {
       const { data }: ApiResponse<GameAchievementsResponse> =
-        await this.steamService.getPlayerAchievements(gameId);
+        await this.steamService.getPlayerAchievements(gameId, steamId);
 
       const { gameName, totalGameAchievements, achievements } = data;
 
       const achievementsDetails: AchievementDetails[] =
         await this.getAchievementsDetails(gameId);
 
-      const playerLockedAchievementsData: AchievementsLockedData[] = 
+      const playerLockedAchievementsData: AchievementsLockedData[] =
         this.getLockedAchievementsData(achievements, achievementsDetails);
-      
+
       const achievementsPlayerData: AchievementPlayerData = {
         gameName,
         totalGameAchievements,
@@ -67,7 +70,7 @@ class AchievementsService {
             }
           : undefined;
       })
-      
+
       .filter(
         (
           lockedAchievementData,

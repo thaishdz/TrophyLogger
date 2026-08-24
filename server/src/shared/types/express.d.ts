@@ -8,10 +8,7 @@ import * as express from 'express';
 declare global { // Quiero que todo mi proyecto sepa que ahora Request va a tener algo nuevo
     namespace Express {  // "Hey TypeScript, en Express..."
         interface Request {      // "...el objeto Request..."
-            steamAuth?: {        // "...ahora puede tener steamAuth como propiedad"
-                apiKey: string;
-                steamId: string;
-            }
+            steamId?: string; // "...ahora puede tener steamId como propiedad"
         }
     }
 }
