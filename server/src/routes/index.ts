@@ -27,8 +27,7 @@ router.get(
 router.get(
   `/gameAchievements/:gameId`,
   ensureAuthenticated,
-  getSteamId,
-  gamesController.gameAchievements.bind(gamesController),
+  gamesController.getGameAchievements.bind(gamesController),
 );
 
 export default router;

@@ -38,6 +38,21 @@ export class GameController {
     }
   };
 
+  public getGameAchievements = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.steamId) throw new HttpException(401, "SteamId no disponible");
+      const steamId = req.steamId;
+      const achievementsData = await this.gameAchievements(Number(req.params.gameId), steamId);
+      res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', achievementsData));
+    } catch (error) {
+      next(error)
+    }
+  }
+
   private async gameAchievements(gameId: number, steamId: string): Promise<GameData> {
     try {
       const playerDataAchievements: AchievementPlayerData =
