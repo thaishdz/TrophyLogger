@@ -29,7 +29,10 @@ export class GameController {
       const steamId = req.steamId;
       const gamesLibrary: GameData[] = await this.gameService.getGamesLibrary(steamId);
       const matchedGames = this.gameService.findGames(gameName, gamesLibrary);
-      const gamesWithAchievements = await Promise.all(matchedGames.map(game => this.gameAchievements(game.gameId, steamId)));
+      const settledAchievements = await Promise.allSettled(matchedGames.map(game => this.gameAchievements(game.gameId, steamId)));
+      const gamesWithAchievements = settledAchievements
+        .filter((result): result is PromiseFulfilledResult<GameData> => result.status === "fulfilled")
+        .map((result) => result.value);
 
       res.json(createApiResponse(true, HTTP_RESPONSE_STATUS.OK, '', gamesWithAchievements));
 
