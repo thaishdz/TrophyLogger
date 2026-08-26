@@ -12,8 +12,6 @@ interface ENV {
   NODE_ENV: string | undefined;
   PORT: number | undefined;
   DATABASE_URI: string | undefined;
-  API_URL: string | undefined;
-  API_URL_STORE: string | undefined;
   STEAM_API_KEY: string | undefined;
 }
 
@@ -22,8 +20,6 @@ interface Config {
   NODE_ENV: string;
   PORT: number;
   DATABASE_URI: string;
-  API_URL: string;
-  API_URL_STORE: string;
   STEAM_API_KEY: string;
 }
 
@@ -32,8 +28,6 @@ const getEnv = (): ENV => {
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
     DATABASE_URI: process.env.DATABASE_URI,
-    API_URL: process.env.API_URL,
-    API_URL_STORE: process.env.API_URL_STORE,
     STEAM_API_KEY: process.env.STEAM_API_KEY,
   }
 }

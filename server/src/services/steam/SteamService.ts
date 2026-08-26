@@ -6,20 +6,17 @@ import { HTTP_RESPONSE_STATUS } from "../../common/http/constants";
 import { SteamApiError } from "../../exceptions/SteamApiError";
 import { ApiResponse } from "../../shared/types/apiResponse";
 import { GameLibraryResponse } from "../../shared/types/game";
+import { STEAM_API_URL, STEAM_STORE_API_URL } from "../../config/constants";
 
 class SteamService {
-  private API_URL: string;
-  private API_URL_STORE: string;
   private STEAM_API_KEY: string;
 
   constructor() {
-    this.API_URL = config.API_URL;
-    this.API_URL_STORE = config.API_URL_STORE;
     this.STEAM_API_KEY = config.STEAM_API_KEY;
   }
 
   async getOwnedGames(steamId: string): Promise<ApiResponse<GameLibraryResponse[]>> {
-    const baseUrl = `${this.API_URL}/IPlayerService/GetOwnedGames/v1/`
+    const baseUrl = `${STEAM_API_URL}/IPlayerService/GetOwnedGames/v1/`
     const params = new URLSearchParams({
       key: this.STEAM_API_KEY,
       steamid: steamId,
@@ -48,7 +45,7 @@ class SteamService {
 
   async getPlayerAchievements<T>(gameId: number, steamId: string): Promise<ApiResponse<T>> {
     try {
-      const baseUrl = `${this.API_URL}/ISteamUserStats/GetPlayerAchievements/v1/`;
+      const baseUrl = `${STEAM_API_URL}/ISteamUserStats/GetPlayerAchievements/v1/`;
       const params = new URLSearchParams({
         appid: gameId.toString(),
         key: this.STEAM_API_KEY,
@@ -80,7 +77,7 @@ class SteamService {
   async getAchievementsDetails<T>(appId: number): Promise<ApiResponse<T>> {
     try {
 
-      const baseUrl = `${this.API_URL}/ISteamUserStats/GetSchemaForGame/v2/`;
+      const baseUrl = `${STEAM_API_URL}/ISteamUserStats/GetSchemaForGame/v2/`;
       const params = new URLSearchParams({
         key: this.STEAM_API_KEY,
         appid: appId.toString(),
@@ -104,7 +101,7 @@ class SteamService {
   async getCoverGame(gameName: string, gameId: number): Promise<string> {
     try {
       const response = await axios.get(
-        `${this.API_URL_STORE}/storesearch?term=${gameName}&cc=es`,
+        `${STEAM_STORE_API_URL}/storesearch?term=${gameName}&cc=es`,
       );
 
       const game = response.data.items.find(
