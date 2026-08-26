@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { UserService } from "../services/UserService";
-import { HttpException } from "../exceptions/HttpException";
 
 const userService = new UserService();
 
