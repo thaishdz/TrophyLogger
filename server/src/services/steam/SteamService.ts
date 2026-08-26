@@ -27,15 +27,16 @@ class SteamService {
     const url = `${baseUrl}?${params.toString()}`;
 
     try {
-      const response = await axios.get(url);
-      const gamesLibrary = response.data.response?.games;
+      const response = await axios.get(url); // lanzará AxiosError
+      const gamesLibrary = response.data.response;
 
-      if (gamesLibrary === undefined) {
-        return { data: [] };
+      if (!('games' in gamesLibrary)) {
+        throw new SteamApiError(403, "Cannot access this user's library")
       }
-      return { data: gamesLibrary };
+      return { data: gamesLibrary.games};
     } catch (error: any) {
-      throw new SteamApiError(
+      if (error instanceof SteamApiError) throw error; // 403
+      throw new SteamApiError( // AxiosError
         error.response?.status || HTTP_RESPONSE_STATUS.SERVER_ERROR,
         "Failed fetching games from Steam API",
         {error}

@@ -1,11 +1,7 @@
-export class SteamApiError extends Error {
+import { HttpException } from "./HttpException";
 
-    status: number;
-    data?: {};
-
+export class SteamApiError extends HttpException {
     constructor(status: number, message: string, data?: {}) {
-        super(message);
-        this.status = status;
-        this.data = data;
+        super(status,message, data);
     }
 }
