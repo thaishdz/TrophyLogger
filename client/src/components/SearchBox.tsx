@@ -28,11 +28,10 @@ function SearchBox(props: Props) {
   }
 
   return (
-    <>
-      <h3 className="font-bold mt-6 mb-3">Search games</h3>
-      <form onSubmit={handleSearch} className="flex justify-center items-center relative w-300">
+    <div className="ml-auto w-1/4">
+      <form onSubmit={handleSearch} className="flex justify-center items-center relative w-full">
         <input
-          className="w-full px-4 py-2 pr-10 rounded-md focus:outline-none bg-gray-100"
+          className="w-full px-4 py-2 pr-10 rounded-full focus:outline-none bg-[#FBF7EC] border-[3px] border-black neo-shadow font-bold placeholder:font-normal"
           type="text"
           placeholder="ej. Hades"
           value={query}
@@ -51,7 +50,7 @@ function SearchBox(props: Props) {
           </svg>
         </button>
       </form>
-    </>
+    </div>
   )
 }
 

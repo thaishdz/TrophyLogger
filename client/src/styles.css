@@ -10,7 +10,17 @@
  * Misc -----> #6494AA
  */
 
-body {  
+body {
     font-family: var(--font-sans);
     font-weight: medium;
+}
+
+/* Efecto neobrutalista: borde grueso + sombra sólida sin difuminado */
+.neo-shadow {
+    box-shadow: 4px 4px 0 0 #111;
+}
+
+.neo-press:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 0 #111;
 }

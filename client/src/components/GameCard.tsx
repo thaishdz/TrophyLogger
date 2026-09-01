@@ -8,7 +8,7 @@ function GameCard({game}: GameCardProps) {
   const totalUnlocked = game.totalGameAchievements - game.achievements.length
   const completionPercentage = Math.round((totalUnlocked / game.totalGameAchievements) * 100)
   return (
-    <div className="bg-gray-100 p-6 rounded-lg mt-5">
+    <div className="bg-[#FBF7EC] border-[3px] border-black neo-shadow p-6 rounded-lg mt-5">
       <div className="mb-4">
         <div className="w-8 h-8 rounded-full flex items-center justify-center">
           <svg className="h-5 w-5 text-yellow-500"
@@ -26,7 +26,7 @@ function GameCard({game}: GameCardProps) {
 
       <h2 className="text-2xl font-bold mb-1">{game.gameName}</h2>
       <p className="text-gray-600 mb-4">{completionPercentage}% Complete • {totalUnlocked}/{game.totalGameAchievements} Achievements</p>
-      <button className="bg-[#e9b872] px-4 py-2 rounded-md border-3 cursor-pointer">
+      <button className="bg-[#e9b872] px-4 py-2 rounded-full border-[3px] border-black neo-shadow neo-press font-bold cursor-pointer transition-transform">
         View Details
       </button>
     </div>
