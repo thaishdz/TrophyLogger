@@ -8,6 +8,7 @@ import logger from "./config/logger";
 import routes from "./routes";
 import authRoutes from "./routes/auth"
 import errorMiddleware from "./middlewares/error";
+import config from "./config";
 
 const app = express();
 
@@ -17,7 +18,12 @@ const stream = {
 };
 
 // Debe ir antes de la rutas para protegerlas
-app.use(cors()); // Permite TODAS las conexiones exteriores en PROD cambiarlo
+// La sesión viaja por cookie, así que el origen no puede ser "*": el navegador
+// bloquea la respuesta si se piden credentials con Access-Control-Allow-Origin: *.
+app.use(cors({
+  origin: config.FRONTEND_URL,
+  credentials: true,
+}));
 app.use(express.json()); // Middlware de entrada de datos,analiza el body para ver si es un JSON y lo parsea para el controller
 app.use(morgan("combined", { stream })); // Registra detalles de cada solicitud HTTP usando Winston
 

@@ -15,7 +15,7 @@ function SearchBox(props: Props) {
   const handleSearch = (e: FormEvent) => {
     e.preventDefault()
 
-    fetch(url)
+    fetch(url, { credentials: 'include' })
       .then(res => res.json())
       .then(result => props.onSearchResults(result.data))
       .catch(err => console.error('Error en la búsqueda:', err))

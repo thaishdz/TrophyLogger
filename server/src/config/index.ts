@@ -13,6 +13,7 @@ interface ENV {
   PORT: number | undefined;
   DATABASE_URI: string | undefined;
   STEAM_API_KEY: string | undefined;
+  FRONTEND_URL: string | undefined;
 }
 
 // Aquí le digo, vale Typescript pero yo quiero que estén definidas y deben verse así:
@@ -21,6 +22,7 @@ interface Config {
   PORT: number;
   DATABASE_URI: string;
   STEAM_API_KEY: string;
+  FRONTEND_URL: string;
 }
 
 const getEnv = (): ENV => {
@@ -29,6 +31,7 @@ const getEnv = (): ENV => {
     PORT: process.env.PORT ? Number(process.env.PORT) : undefined,
     DATABASE_URI: process.env.DATABASE_URI,
     STEAM_API_KEY: process.env.STEAM_API_KEY,
+    FRONTEND_URL: process.env.FRONTEND_URL,
   }
 }
 
