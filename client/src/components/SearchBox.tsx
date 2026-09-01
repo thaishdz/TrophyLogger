@@ -5,20 +5,26 @@ import { GameData } from '../types/game'
 
 type Props = {
   onSearchResults: (games: GameData[]) => void
+  onError: (message: string) => void
 }
 
 function SearchBox(props: Props) {
   const [query, setQuery] = useState('')
   const url = `${API_URL}search?game=${encodeURIComponent(query)}`
-  console.log('URL construida:', url)
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault()
 
     fetch(url, { credentials: 'include' })
       .then(res => res.json())
-      .then(result => props.onSearchResults(result.data))
-      .catch(err => console.error('Error en la búsqueda:', err))
+      .then(result => {
+        if (!result.success) {
+          props.onError(result.message)
+          return
+        }
+        props.onSearchResults(result.data ?? [])
+      })
+      .catch(() => props.onError('No se pudo conectar con el servidor'))
   }
 
   return (
