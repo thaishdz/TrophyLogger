@@ -1,6 +1,6 @@
-import { FormEvent, useState } from "react";
-import { API_URL } from "../config";
-import { GameData } from "../types/game";
+import { FormEvent, useState } from 'react'
+import { API_URL } from '../config'
+import { GameData } from '../types/game'
 
 
 type Props = {
@@ -8,18 +8,18 @@ type Props = {
 }
 
 function SearchBox(props: Props) {
-  const [query, setQuery] = useState('');
-  const url = `${API_URL}search?game=${encodeURIComponent(query)}`;
-  console.log("📡 URL construida:", url);
+  const [query, setQuery] = useState('')
+  const url = `${API_URL}search?game=${encodeURIComponent(query)}`
+  console.log('URL construida:', url)
 
   const handleSearch = (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     fetch(url)
       .then(res => res.json())
       .then(result => props.onSearchResults(result.data))
-      .catch(err => console.error("Error en la búsqueda:", err));
-  };
+      .catch(err => console.error('Error en la búsqueda:', err))
+  }
 
   return (
     <>
@@ -46,7 +46,7 @@ function SearchBox(props: Props) {
         </button>
       </form>
     </>
-  );
+  )
 }
 
-export default SearchBox;
+export default SearchBox
