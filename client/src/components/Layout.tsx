@@ -1,6 +1,7 @@
+import { ReactNode } from "react";
 import Sidebar from "./Sidebar";
 
-function Layout({ children }) {
+function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex">
      <Sidebar />

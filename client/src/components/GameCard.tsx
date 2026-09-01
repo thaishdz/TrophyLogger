@@ -7,7 +7,6 @@ interface GameCardProps {
 function GameCard({game}: GameCardProps) {
   const totalUnlocked = game.totalGameAchievements - game.achievements.length;
   const completionPercentage = Math.round((totalUnlocked / game.totalGameAchievements) * 100);
-  console.log("Esta es la tarjeta game:", game)
   return (
     <div className="bg-gray-100 p-6 rounded-lg mt-5">
       <div className="mb-4">

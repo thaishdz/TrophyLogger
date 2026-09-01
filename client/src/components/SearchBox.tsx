@@ -41,7 +41,7 @@ function SearchBox(props: Props) {
             stroke="currentColor"
             strokeWidth={2}>
             <path
-              strokeLinecap="round"d="M21 21l-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+              strokeLinecap="round" d="M21 21l-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
           </svg>
         </button>
       </form>
